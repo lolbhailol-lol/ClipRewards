@@ -81,5 +81,16 @@ Replace `cliprewards.in` with your domain.
 
 Sign in with an email listed in `ADMIN_EMAILS`, then use **Admin → Campaigns**: pick a verified brand (or **Add brand**), fill in the brief, rate, budget, dates and images, then **Save and go live**. Live campaigns appear on the home feed and `/campaigns` immediately. Pause or End from the campaign page.
 
+### Demo campaigns in production
+
+To show 6 sample campaigns (brands marked “(demo)”) before real ones exist:
+
+```bash
+MONGODB_URI="<atlas uri>" npm run demo:add -w server     # add / refresh
+MONGODB_URI="<atlas uri>" npm run demo:remove -w server  # remove all demo data before inviting real creators
+```
+
+Only brands, campaigns and users with `@demo.local` emails are touched.
+
 ### Health check
 `GET /api/health` returns `{"status":"ok"}`.
