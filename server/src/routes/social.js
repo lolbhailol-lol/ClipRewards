@@ -51,11 +51,18 @@ router.get('/instagram/callback', async (req, res) => {
     const user = await User.findById(userId);
     if (!user || user.role !== 'creator') return back({ social_error: 'instagram_failed' });
 
-    const short = await instagram.exchangeCode(code);
+    let short;
+    try {
+      short = await instagram.exchangeCode(code);
+    } catch (err) {
+      err.message = `code exchange: ${err.message}`;
+      throw err;
+    }
     const long = await instagram.toLongLived(short.accessToken);
-    const profile = await instagram.getProfile(long.accessToken);
+    const profile = await instagram.getProfile(long.accessToken, short.userId);
 
-    if (!['BUSINESS', 'MEDIA_CREATOR'].includes(String(profile.accountType).toUpperCase())) {
+    // Instagram Login only works for professional accounts; if the type wasn't returned, let it through.
+    if (profile.accountType && !['BUSINESS', 'MEDIA_CREATOR'].includes(String(profile.accountType).toUpperCase())) {
       return back({ social_error: 'instagram_not_professional' });
     }
 

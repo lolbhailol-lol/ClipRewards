@@ -311,3 +311,23 @@ describe('insights dashboards', () => {
     expect(res.body.code).toBe('not_connected');
   });
 });
+
+describe('Instagram connect fallbacks', () => {
+  test('connect still succeeds when the long-lived exchange and full profile request are refused', async () => {
+    const c = await creator();
+    const start = await request(app).get('/api/social/instagram/start').set(c.auth);
+    const state = new URL(start.body.url).searchParams.get('state');
+    const unsupported = [400, { error: { message: 'Unsupported request - method type: get', type: 'IGApiException', code: 100 } }];
+    mockFetch({
+      'api.instagram.com/oauth/access_token': { data: [{ access_token: 'SHORT', user_id: '1789', permissions: 'instagram_business_basic' }] },
+      'graph.instagram.com/access_token': unsupported,
+      '/access_token?': unsupported,
+      '/me?': (url) => (String(url).includes('followers_count') ? unsupported : { user_id: '1789', username: 'riya.edits', account_type: 'MEDIA_CREATOR' }),
+    });
+    const res = await request(app).get(`/api/social/instagram/callback?code=abc&state=${state}`).expect(302);
+    expect(res.headers.location).toContain('connected=instagram');
+    const acc = await SocialAccount.findOne({ platform: 'instagram' }).select('+accessTokenEnc');
+    expect(acc).toMatchObject({ externalId: '1789', username: 'riya.edits' });
+    expect(decrypt(acc.accessTokenEnc)).toBe('SHORT'); // kept the short-lived token
+  });
+});

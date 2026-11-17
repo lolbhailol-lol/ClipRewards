@@ -44,11 +44,45 @@ async function exchangeCode(code) {
   };
 }
 
-/** Short-lived → long-lived token (~60 days). */
+/** Labels an Instagram API error with the step that failed (for logs), keeping status/body. */
+function stepError(step, err) {
+  const trace = err.body?.error?.fbtrace_id ? ` [fbtrace ${err.body.error.fbtrace_id}]` : '';
+  const e = new ApiError(`${step}: ${err.message}${trace}`, err.status, err.body);
+  e.step = step;
+  return e;
+}
+
+/** Tries each URL in turn; returns the first success, or throws the last error. */
+async function firstOk(step, urls, opts) {
+  let last;
+  for (const url of urls) {
+    try {
+      return await fetchJson(url, opts);
+    } catch (err) {
+      last = err;
+      if (err.status && err.status >= 500) break;
+      console.warn(`[instagram] ${step} attempt failed (${err.status || ''} ${err.message}); trying next`);
+    }
+  }
+  throw stepError(step, last);
+}
+
+/**
+ * Short-lived → long-lived token (~60 days). If Instagram refuses every variant we keep the
+ * short-lived token (1 hour) so the connect still succeeds; the creator reconnects later.
+ */
 async function toLongLived(shortToken) {
   const qs = new URLSearchParams({ grant_type: 'ig_exchange_token', client_secret: config.instagram.appSecret, access_token: shortToken });
-  const data = await fetchJson(`https://graph.instagram.com/access_token?${qs}`);
-  return { accessToken: data.access_token, expiresAt: new Date(Date.now() + Number(data.expires_in || 0) * 1000) };
+  try {
+    const data = await firstOk('long-lived token', [
+      `https://graph.instagram.com/access_token?${qs}`,
+      `https://graph.instagram.com/${config.instagram.graphVersion}/access_token?${qs}`,
+    ]);
+    return { accessToken: data.access_token, expiresAt: new Date(Date.now() + Number(data.expires_in || 0) * 1000), longLived: true };
+  } catch (err) {
+    console.warn(`[instagram] ${err.message}. Using the short-lived token for now.`);
+    return { accessToken: shortToken, expiresAt: new Date(Date.now() + 55 * 60 * 1000), longLived: false };
+  }
 }
 
 /** Refresh a long-lived token (must be ≥24h old and not expired). */
@@ -58,12 +92,24 @@ async function refreshToken(longToken) {
   return { accessToken: data.access_token, expiresAt: new Date(Date.now() + Number(data.expires_in || 0) * 1000) };
 }
 
-async function getProfile(token) {
-  const fields = 'user_id,username,name,account_type,profile_picture_url,followers_count,media_count';
-  const raw = await fetchJson(`${graph()}/me?${new URLSearchParams({ fields, access_token: token })}`);
+/**
+ * The connected account's profile. Falls back to fewer fields, an unversioned URL, and the
+ * numeric user id, because Instagram rejects whole requests if any one part is unsupported.
+ */
+async function getProfile(token, userId) {
+  const full = 'user_id,username,name,account_type,profile_picture_url,followers_count,media_count';
+  const basic = 'user_id,username,account_type';
+  const q = (fields) => new URLSearchParams({ fields, access_token: token });
+  const urls = [
+    `${graph()}/me?${q(full)}`,
+    `${graph()}/me?${q(basic)}`,
+    `https://graph.instagram.com/me?${q(basic)}`,
+    ...(userId ? [`${graph()}/${userId}?${q(basic)}`, `https://graph.instagram.com/${userId}?${q('id,username,account_type')}`] : []),
+  ];
+  const raw = await firstOk('profile', urls);
   const p = Array.isArray(raw.data) ? raw.data[0] : raw.data && !Array.isArray(raw.data) ? raw.data : raw;
   return {
-    id: String(p.user_id || p.id),
+    id: String(p.user_id || p.id || userId),
     username: p.username || '',
     name: p.name || '',
     accountType: p.account_type || '',
