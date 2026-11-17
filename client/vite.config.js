@@ -12,6 +12,8 @@ export default defineConfig({
     allowedHosts: ['.ngrok-free.dev', '.ngrok-free.app', '.ngrok.app', '.trycloudflare.com'],
     proxy: {
       '/api': 'http://localhost:3000',
+      // Same path as production; lets local tests use our own domain for sign-in too.
+      '/__/auth': 'http://localhost:3000',
     },
   },
 })

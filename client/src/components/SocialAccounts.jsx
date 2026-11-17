@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Eye, Heart, Link2, MessageCircle, Repeat2, Bookmark, Users, X } from 'lucide-react';
 import { api } from '../lib/api';
 import { compact, timeAgo } from '../lib/format';
-import { connectYouTube } from '../lib/firebase';
+import { useYouTubeConnect } from '../lib/useYouTubeConnect';
 import { SOCIAL_ERRORS, startInstagramConnect } from '../lib/social';
 import { InstagramIcon, YoutubeIcon } from '../ui/PlatformIcons';
 import { Button, Card, Field, Input, ListGroup, Notice, Skeleton, Status } from '../ui';
@@ -39,19 +39,9 @@ export default function SocialAccounts() {
   }, [params, setParams, qc]);
 
   const instagram = useMutation({ mutationFn: () => startInstagramConnect('/app/profile') });
-  const youtube = useMutation({
-    mutationFn: async () => {
-      const accessToken = await connectYouTube();
-      if (!accessToken) return null;
-      return api('/social/youtube/connect', { method: 'POST', body: { accessToken } });
-    },
-    onSuccess: (res) => {
-      if (!res) return;
-      setBanner({ tone: 'success', text: 'YouTube connected.' });
-      qc.invalidateQueries({ queryKey: ['social'] });
-      qc.invalidateQueries({ queryKey: ['me'] });
-    },
-  });
+  const yt = useYouTubeConnect({ onConnected: () => setBanner({ tone: 'success', text: 'YouTube connected.' }) });
+  // Same shape as the Instagram mutation for the row buttons below.
+  const youtube = { mutate: yt.connect, isPending: yt.isPending };
   const disconnect = useMutation({
     mutationFn: (platform) => api(`/social/${platform}`, { method: 'DELETE' }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['social'] }),
@@ -59,7 +49,7 @@ export default function SocialAccounts() {
 
   const byPlatform = Object.fromEntries((data?.accounts ?? []).map((a) => [a.platform, a]));
   const actions = { instagram, youtube };
-  const err = instagram.error || youtube.error || disconnect.error;
+  const err = instagram.error || disconnect.error;
 
   return (
     <section>
@@ -67,6 +57,22 @@ export default function SocialAccounts() {
         <Notice tone={banner.tone} title={banner.text} className="mb-3" action={<button onClick={() => setBanner(null)} aria-label="Dismiss" className="text-muted hover:text-text"><X className="size-4" /></button>} />
       )}
       {err && <Notice tone="danger" className="mb-3">{err.message}</Notice>}
+      {yt.error && (
+        <Notice
+          tone="danger"
+          title="YouTube didn’t connect"
+          className="mb-3"
+          action={
+            yt.canRedirect && (
+              <Button size="sm" variant="secondary" onClick={yt.connectInWindow}>
+                Continue in this window
+              </Button>
+            )
+          }
+        >
+          {yt.error.message}
+        </Notice>
+      )}
       {error && <Notice tone="danger" className="mb-3">{error.message}</Notice>}
 
       <ListGroup title="Connected accounts">

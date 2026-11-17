@@ -4,7 +4,8 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { BarChart3, Check, LayoutGrid, ShieldCheck } from 'lucide-react';
 import { api } from '../../lib/api';
 import { takeNext, useAuth } from '../../lib/auth';
-import { connectYouTube, firebaseConfigured } from '../../lib/firebase';
+import { firebaseConfigured } from '../../lib/firebase';
+import { useYouTubeConnect } from '../../lib/useYouTubeConnect';
 import { SOCIAL_ERRORS, startInstagramConnect } from '../../lib/social';
 import { InstagramIcon, YoutubeIcon } from '../../ui/PlatformIcons';
 import { Alert, Button, Spinner } from '../../ui';
@@ -52,15 +53,8 @@ export default function CreatorOnboarding() {
   }, [params, setParams, finish]);
 
   const instagram = useMutation({ mutationFn: () => startInstagramConnect('/onboarding/creator'), onError: (e) => setError(e.message) });
-  const youtube = useMutation({
-    mutationFn: async () => {
-      const accessToken = await connectYouTube();
-      if (!accessToken) return null;
-      return api('/social/youtube/connect', { method: 'POST', body: { accessToken } });
-    },
-    onSuccess: (res) => res && finish.mutate(),
-    onError: (e) => setError(e.message),
-  });
+  const yt = useYouTubeConnect({ onConnected: () => finish.mutate() });
+  const youtube = { mutate: yt.connect, isPending: yt.isPending };
 
   if (params.get('connected') || finish.isPending) {
     return (
@@ -87,6 +81,22 @@ export default function CreatorOnboarding() {
       </ul>
 
       {error && <Alert tone="danger" className="mb-4">{error}</Alert>}
+      {yt.error && (
+        <Alert
+          tone="danger"
+          title="YouTube didn’t connect"
+          className="mb-4"
+          action={
+            yt.canRedirect && (
+              <Button size="sm" variant="secondary" onClick={yt.connectInWindow}>
+                Continue in this window
+              </Button>
+            )
+          }
+        >
+          {yt.error.message}
+        </Alert>
+      )}
       {finish.error && <Alert tone="danger" className="mb-4">{finish.error.message}</Alert>}
 
       <Button size="lg" block arrow loading={instagram.isPending} disabled={!igReady || busy} onClick={() => instagram.mutate()}>

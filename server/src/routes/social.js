@@ -116,8 +116,18 @@ router.post('/youtube/connect', validate(z.object({ accessToken: z.string().min(
   try {
     channel = await youtube.getMyChannel(req.body.accessToken);
   } catch (err) {
-    if (err.status === 404) return res.status(404).json({ error: err.message });
-    console.warn('[social] YouTube connect failed:', err.status || '', err.message);
+    if (err.status === 404) return res.status(404).json({ error: err.message, code: 'no_channel' });
+    const reason = err.body?.error?.errors?.[0]?.reason || '';
+    console.warn('[social] YouTube connect failed:', err.status || '', reason, err.message);
+    // Google's consent screen has a checkbox per permission; unticked = token without YouTube access.
+    if (err.status === 403 && /insufficientPermissions|forbidden|ACCESS_TOKEN_SCOPE_INSUFFICIENT/i.test(reason + err.message)) {
+      return res.status(400).json({ error: 'Google didn’t give YouTube access. Try again and tick “View your YouTube account” on the Google screen.', code: 'scope_missing' });
+    }
+    if (reason === 'youtubeSignupRequired') return res.status(404).json({ error: 'This Google account has no YouTube channel. Pick the account that owns your channel.', code: 'no_channel' });
+    if (err.status === 401) return res.status(400).json({ error: 'Google sign-in expired. Please try again.', code: 'expired' });
+    if (err.status === 403 && /accessNotConfigured|SERVICE_DISABLED/i.test(reason + err.message)) {
+      return res.status(503).json({ error: 'YouTube API isn’t enabled for this app yet.', code: 'api_disabled' });
+    }
     return res.status(502).json({ error: 'Couldn’t read your YouTube channel. Please try again.' });
   }
   try {

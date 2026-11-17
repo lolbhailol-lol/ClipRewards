@@ -13,7 +13,8 @@ function securityHeaders(req, res, next) {
   res.set({
     'X-Content-Type-Options': 'nosniff',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
-    'X-Frame-Options': 'DENY',
+    // SAMEORIGIN (not DENY): Firebase's sign-in helper frame under /__/auth must load on our own pages.
+    'X-Frame-Options': 'SAMEORIGIN',
     'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
     // Lets the Google sign-in popup talk back to this page.
     'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
@@ -35,6 +36,9 @@ function createApp({ rateLimits = process.env.NODE_ENV !== 'test', serveClient =
       origin: (origin, cb) => cb(null, !origin || config.allowedOrigins.includes(origin)),
     })
   );
+
+  // Firebase sign-in helper pages on our own domain (see routes/firebaseAuthProxy.js).
+  app.use('/__/auth', require('./routes/firebaseAuthProxy').firebaseAuthProxy());
 
   // Instagram webhooks need the raw body for signature checks, so they come before express.json().
   const igWebhook = require('./routes/igWebhook');
