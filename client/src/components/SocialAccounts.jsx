@@ -117,7 +117,7 @@ export default function SocialAccounts() {
               );
             })}
       </ListGroup>
-      <p className="mt-2 px-1 text-[13px] text-faint">We read views and engagement only. We can’t post, comment or message from your account.</p>
+      <p className="mt-2 px-1 text-[13px] text-faint">Instagram opens in your browser: log in once if asked, then tap Allow. We read views and engagement only and can’t post, comment or message from your account.</p>
     </section>
   );
 }

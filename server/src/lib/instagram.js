@@ -13,7 +13,10 @@ function authorizeUrl(state) {
     response_type: 'code',
     scope: SCOPES.join(','),
     state,
-    force_reauth: 'true', // Meta recommends it, especially on mobile
+    // No force_reauth: if the browser is already logged in to instagram.com, Instagram
+    // goes straight to the Allow screen instead of asking for the password again.
+    // Set INSTAGRAM_FORCE_REAUTH=true to always ask (e.g. on shared devices).
+    ...(process.env.INSTAGRAM_FORCE_REAUTH === 'true' ? { force_reauth: 'true' } : {}),
   });
   return `https://www.instagram.com/oauth/authorize?${qs}`;
 }

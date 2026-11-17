@@ -103,7 +103,7 @@ export default function CreatorOnboarding() {
         {!instagram.isPending && <InstagramIcon className="size-5" />} Connect Instagram
       </Button>
       {config.data && !igReady && <p className="mt-2 text-center text-xs text-muted">Instagram connect is being set up. You can skip for now.</p>}
-      <p className="mt-2 text-center text-xs text-faint">Needs a Creator or Business account (free to switch in Instagram settings).</p>
+      <p className="mt-2 text-center text-xs text-faint">Opens Instagram in your browser: log in once if asked, then tap Allow. Needs a Creator or Business account (free to switch in Instagram settings).</p>
 
       <div className="my-6 flex items-center gap-3 text-xs text-faint">
         <span className="h-px flex-1 bg-border" /> or <span className="h-px flex-1 bg-border" />
