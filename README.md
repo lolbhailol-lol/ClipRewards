@@ -70,7 +70,7 @@ Replace `cliprewards.in` with your domain.
 
 **Firebase (Google sign-in)**
 - Authentication → Settings → **Authorized domains**: add `cliprewards.in`.
-- Google Cloud → APIs & Services → Credentials → the **Web client (auto created by Google Service)** → **Authorized redirect URIs**: add `https://cliprewards.in/__/auth/handler`. (In production the server serves Firebase’s sign-in pages on your domain, so sign-in and YouTube connect work in Safari and Chrome even when popups are blocked.)
+- Google Cloud → APIs & Services → Credentials → the **Web client (auto created by Google Service)** → **Authorized redirect URIs**: add `https://cliprewards.in/__/auth/handler`. Then set `VITE_AUTH_ON_OWN_DOMAIN=true` and redeploy: the app will run Google sign-in through your own domain (the server serves Firebase’s sign-in pages at /__/auth), which works better in Safari and when popups are blocked. Until then it uses Firebase’s own domain, which works without this step.
 
 **Google Cloud (YouTube)**
 - Enable **YouTube Data API v3**; OAuth consent screen: add scope `youtube.readonly` and your domain. Until Google verifies the app, users see an “unverified app” warning (max 100 users).

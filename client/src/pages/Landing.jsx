@@ -71,8 +71,7 @@ export default function Landing() {
         <div className="hero-glow" aria-hidden />
         <div className="hero-rings top-[22rem] md:top-[26rem]" aria-hidden>
           <span className="hero-ring" style={{ width: 560, height: 560, '--dur': '16s' }} />
-          <span className="hero-ring" style={{ width: 860, height: 860, '--dur': '22s', '--dir': 'reverse' }} />
-          <span className="hero-ring" style={{ width: 1180, height: 1180, '--dur': '30s' }} />
+          <span className="hero-ring hidden md:block" style={{ width: 860, height: 860, '--dur': '22s', '--dir': 'reverse' }} />
         </div>
 
         <div className="relative mx-auto max-w-6xl px-4 pb-10 pt-14 md:px-6 md:pt-24">

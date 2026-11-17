@@ -43,7 +43,6 @@ export default function Backdrop() {
         <span className="beam beam--2" />
         <span className="beam beam--3" />
         <span className="beam beam--4" />
-        <span className="beam beam--5" />
       </div>
       <div className="backdrop__grid" />
       <div className="backdrop__vignette" />

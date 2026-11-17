@@ -3,7 +3,12 @@
 
 // In production the server serves Firebase's sign-in pages at /__/auth on our own domain,
 // so redirect sign-in works in browsers that block third-party storage (Safari, Chrome).
-const ownDomain = import.meta.env.PROD && window.location.protocol === 'https:' && !window.location.hostname.endsWith('.firebaseapp.com');
+// Opt-in: only after https://<domain>/__/auth/handler is added to the Google OAuth client's redirect URIs.
+const ownDomain =
+  import.meta.env.PROD &&
+  import.meta.env.VITE_AUTH_ON_OWN_DOMAIN === 'true' &&
+  window.location.protocol === 'https:' &&
+  !window.location.hostname.endsWith('.firebaseapp.com');
 
 const cfg = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
