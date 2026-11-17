@@ -36,7 +36,7 @@ Any Node host works (Render, Railway, Fly, a VPS). Example: **Render → New Web
 |---|---|
 | Build command | `npm ci && npm run build` |
 | Start command | `npm start` |
-| Node | 20+ |
+| Node | 24.12+ (the Dockerfile uses node:24) |
 
 `npm ci` installs dev dependencies too (needed for the Vite build). The embedded test database is never used in production.
 

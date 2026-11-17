@@ -30,6 +30,6 @@
     "testTimeout": 60000
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=24.12"
   }
 }
