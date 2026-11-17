@@ -15,11 +15,20 @@ const originOf = (url) => {
 // so this is the one domain users visit (e.g. https://cliprewards.in).
 const clientOrigin = (process.env.CLIENT_ORIGIN || process.env.PUBLIC_URL || 'http://localhost:5173').replace(/\/$/, '');
 
+// Instagram sends people back here after "Allow". In production it must be on our own site:
+// a leftover dev value (e.g. an ngrok tunnel) would send real users to a dev machine.
+const defaultIgRedirect = `${clientOrigin}/api/social/instagram/callback`;
+let igRedirect = process.env.INSTAGRAM_REDIRECT_URI || defaultIgRedirect;
+if (isProd && originOf(igRedirect) !== originOf(clientOrigin)) {
+  console.warn(`[config] Ignoring INSTAGRAM_REDIRECT_URI (${originOf(igRedirect)}): it isn't on ${clientOrigin}. Using ${defaultIgRedirect}`);
+  igRedirect = defaultIgRedirect;
+}
+
 const instagram = {
   appId: process.env.INSTAGRAM_APP_ID || '',
   appSecret: process.env.INSTAGRAM_APP_SECRET || '',
   // Defaults to <clientOrigin>/api/social/instagram/callback. Must match Meta's dashboard exactly.
-  redirectUri: process.env.INSTAGRAM_REDIRECT_URI || `${clientOrigin}/api/social/instagram/callback`,
+  redirectUri: igRedirect,
   graphVersion: process.env.INSTAGRAM_GRAPH_VERSION || 'v27.0',
   // Any random string; paste the same value as the Verify token in Meta's webhook settings.
   webhookVerifyToken: process.env.INSTAGRAM_WEBHOOK_VERIFY_TOKEN || '',
