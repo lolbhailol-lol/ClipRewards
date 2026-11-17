@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from './api';
-import { completeYouTubeRedirect, connectYouTube, connectYouTubeRedirect } from './firebase';
+import { completeYouTubeRedirect, connectYouTube, connectYouTubeRedirect, preloadFirebase } from './firebase';
 
 /**
  * YouTube connect for any screen.
@@ -21,7 +21,8 @@ export function useYouTubeConnect({ onConnected } = {}) {
   };
 
   const popup = useMutation({
-    mutationFn: async () => finish(await connectYouTube()),
+    // Receives the popup promise, started inside the tap (iPhone Safari blocks popups opened later).
+    mutationFn: async (pendingToken) => finish(await pendingToken),
     onSuccess: (res) => onConnected?.(res),
   });
   const inWindow = useMutation({ mutationFn: connectYouTubeRedirect });
@@ -37,6 +38,7 @@ export function useYouTubeConnect({ onConnected } = {}) {
   useEffect(() => {
     if (checked.current) return;
     checked.current = true;
+    preloadFirebase();
     returning.mutate();
   }, [returning]);
 
@@ -44,7 +46,9 @@ export function useYouTubeConnect({ onConnected } = {}) {
   return {
     connect: () => {
       returning.reset();
-      popup.mutate();
+      const pending = connectYouTube();
+      pending.catch(() => {}); // the mutation reports the error
+      popup.mutate(pending);
     },
     connectInWindow: () => inWindow.mutate(),
     isPending: popup.isPending || inWindow.isPending || returning.isPending,

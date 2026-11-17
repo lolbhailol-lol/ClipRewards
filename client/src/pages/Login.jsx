@@ -4,7 +4,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { ArrowLeft, ShieldCheck } from 'lucide-react';
 import { api } from '../lib/api';
 import { homeFor, takeNext, useAuth } from '../lib/auth';
-import { completeRedirectSignIn, firebaseConfigured, signInWithGoogle } from '../lib/firebase';
+import { completeRedirectSignIn, firebaseConfigured, preloadFirebase, signInWithGoogle } from '../lib/firebase';
 import BottomNav, { usePublicNav } from '../layouts/BottomNav';
 import { Alert, Button, Card, Field, Input, Logo, Spinner } from '../ui';
 
@@ -47,8 +47,9 @@ export default function Login() {
   };
 
   const google = useMutation({
-    mutationFn: async (fromRedirect) => {
-      const idToken = fromRedirect ? await completeRedirectSignIn() : await signInWithGoogle();
+    // Gets a promise for the Google ID token (started in the tap itself, see onClick).
+    mutationFn: async (pendingToken) => {
+      const idToken = await pendingToken;
       if (!idToken) return null; // cancelled, or the page is redirecting
       return api('/auth/firebase', { method: 'POST', body: { idToken } });
     },
@@ -60,7 +61,8 @@ export default function Login() {
   useEffect(() => {
     if (checkedRedirect.current || !firebaseConfigured) return;
     checkedRedirect.current = true;
-    google.mutate(true);
+    preloadFirebase();
+    google.mutate(completeRedirectSignIn());
   }, [google]);
 
   if (user) return <Navigate to={homeFor(user)} replace />;
@@ -85,7 +87,7 @@ export default function Login() {
           className="mt-6 !bg-white !text-[#1f1f1f] hover:!bg-zinc-100"
           loading={google.isPending}
           disabled={!googleReady}
-          onClick={() => google.mutate(false)}
+          onClick={() => google.mutate(signInWithGoogle())}
         >
           {!google.isPending && <GoogleG />} Continue with Google
         </Button>

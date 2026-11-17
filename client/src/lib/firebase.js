@@ -20,17 +20,31 @@ const cfg = {
 export const firebaseConfigured = Boolean(cfg.apiKey && import.meta.env.VITE_FIREBASE_AUTH_DOMAIN && cfg.projectId);
 
 let authPromise = null;
+let loaded = null; // { auth, sdk } once the SDK has finished loading
 
 async function getAuthAndSdk() {
   if (!firebaseConfigured) throw new Error('Google sign-in isn’t set up yet. Add the Firebase settings to .env.');
   if (!authPromise) {
     authPromise = Promise.all([import('firebase/app'), import('firebase/auth')]).then(([appSdk, authSdk]) => {
       const app = appSdk.getApps()[0] ?? appSdk.initializeApp(cfg);
-      return { auth: authSdk.getAuth(app), sdk: authSdk };
+      loaded = { auth: authSdk.getAuth(app), sdk: authSdk };
+      return loaded;
     });
   }
   return authPromise;
 }
+
+/**
+ * Load the Firebase SDK ahead of time (call when a page with a Google button opens).
+ * iPhone Safari only allows a popup that opens in the same tap; if we first had to download
+ * the SDK, Safari would block the Google window.
+ */
+export function preloadFirebase() {
+  if (firebaseConfigured) getAuthAndSdk().catch(() => {});
+}
+
+/** The SDK without waiting, if it's ready, so the popup opens inside the tap. */
+const ready = async () => loaded || getAuthAndSdk();
 
 const FRIENDLY = {
   'auth/popup-closed-by-user': null, // user closed it; not an error
@@ -45,7 +59,7 @@ const FRIENDLY = {
  * Falls back to a full-page redirect when the popup is blocked (common on phones).
  */
 export async function signInWithGoogle() {
-  const { auth, sdk } = await getAuthAndSdk();
+  const { auth, sdk } = loaded || (await ready());
   const provider = new sdk.GoogleAuthProvider();
   provider.setCustomParameters({ prompt: 'select_account' });
   try {
@@ -106,7 +120,7 @@ function ytProvider(sdk) {
  * Never fails silently: closed or blocked popups throw a clear, actionable error.
  */
 export async function connectYouTube() {
-  const { auth, sdk } = await getAuthAndSdk();
+  const { auth, sdk } = loaded || (await ready());
   try {
     const result = await sdk.signInWithPopup(auth, ytProvider(sdk));
     const token = sdk.GoogleAuthProvider.credentialFromResult(result)?.accessToken;
