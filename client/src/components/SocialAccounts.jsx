@@ -5,7 +5,7 @@ import { Eye, Heart, Link2, MessageCircle, Repeat2, Bookmark, Users, X } from 'l
 import { api } from '../lib/api';
 import { compact, timeAgo } from '../lib/format';
 import { useYouTubeConnect } from '../lib/useYouTubeConnect';
-import { SOCIAL_ERRORS, startInstagramConnect } from '../lib/social';
+import { socialErrorText, startInstagramConnect } from '../lib/social';
 import { InstagramIcon, YoutubeIcon } from '../ui/PlatformIcons';
 import { Button, Card, Field, Input, ListGroup, Notice, Skeleton, Status } from '../ui';
 
@@ -30,9 +30,10 @@ export default function SocialAccounts() {
     const connected = params.get('connected');
     const err = params.get('social_error');
     if (!connected && !err) return;
-    setBanner(connected ? { tone: 'success', text: `${PLATFORMS[connected]?.name ?? 'Account'} connected.` } : { tone: 'danger', text: SOCIAL_ERRORS[err] ?? SOCIAL_ERRORS.instagram_failed });
+    setBanner(connected ? { tone: 'success', text: `${PLATFORMS[connected]?.name ?? 'Account'} connected.` } : { tone: 'danger', text: socialErrorText(params) });
     params.delete('connected');
     params.delete('social_error');
+    params.delete('step');
     setParams(params, { replace: true });
     qc.invalidateQueries({ queryKey: ['social'] });
     qc.invalidateQueries({ queryKey: ['me'] });

@@ -6,7 +6,7 @@ import { api } from '../../lib/api';
 import { takeNext, useAuth } from '../../lib/auth';
 import { firebaseConfigured } from '../../lib/firebase';
 import { useYouTubeConnect } from '../../lib/useYouTubeConnect';
-import { SOCIAL_ERRORS, startInstagramConnect } from '../../lib/social';
+import { socialErrorText, startInstagramConnect } from '../../lib/social';
 import { InstagramIcon, YoutubeIcon } from '../../ui/PlatformIcons';
 import { Alert, Button, Spinner } from '../../ui';
 import OnboardingFrame from './OnboardingFrame';
@@ -47,7 +47,7 @@ export default function CreatorOnboarding() {
     handled.current = true;
     if (connected) finish.mutate();
     else {
-      setError(SOCIAL_ERRORS[err] ?? SOCIAL_ERRORS.instagram_failed);
+      setError(socialErrorText(params));
       setParams({}, { replace: true });
     }
   }, [params, setParams, finish]);

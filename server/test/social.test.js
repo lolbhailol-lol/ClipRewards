@@ -330,4 +330,36 @@ describe('Instagram connect fallbacks', () => {
     expect(acc).toMatchObject({ externalId: '1789', username: 'riya.edits' });
     expect(decrypt(acc.accessTokenEnc)).toBe('SHORT'); // kept the short-lived token
   });
+
+  test('iPhone loading the callback twice: code is exchanged once and both loads say connected', async () => {
+    const c = await creator();
+    const start = await request(app).get('/api/social/instagram/start').set(c.auth);
+    const state = new URL(start.body.url).searchParams.get('state');
+    let exchanges = 0;
+    mockFetch({
+      'api.instagram.com/oauth/access_token': () => {
+        exchanges++;
+        return exchanges === 1
+          ? { access_token: 'SHORT', user_id: '1790', permissions: 'instagram_business_basic' }
+          : [400, { error_type: 'OAuthException', code: 400, error_message: 'This authorization code has been used' }];
+      },
+      'graph.instagram.com/access_token': { access_token: 'LONG', expires_in: 5184000 },
+      '/me?': { user_id: '1790', username: 'twice.loaded', account_type: 'MEDIA_CREATOR' },
+    });
+    const url = `/api/social/instagram/callback?code=dup1&state=${state}`;
+    const [a, b] = await Promise.all([request(app).get(url), request(app).get(url)]);
+    expect(exchanges).toBe(1);
+    expect(a.headers.location).toContain('connected=instagram');
+    expect(b.headers.location).toContain('connected=instagram');
+  });
+
+  test('a failed connect tells the user which step failed', async () => {
+    const c = await creator();
+    const start = await request(app).get('/api/social/instagram/start').set(c.auth);
+    const state = new URL(start.body.url).searchParams.get('state');
+    mockFetch({ 'api.instagram.com/oauth/access_token': [400, { error_message: 'Invalid redirect_uri' }] });
+    const res = await request(app).get(`/api/social/instagram/callback?code=bad1&state=${state}`).expect(302);
+    expect(res.headers.location).toContain('social_error=instagram_failed');
+    expect(res.headers.location).toContain('step=code');
+  });
 });

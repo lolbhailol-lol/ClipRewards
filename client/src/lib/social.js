@@ -17,3 +17,13 @@ export const SOCIAL_ERRORS = {
   instagram_taken: 'That Instagram account is already connected to another ClipRewards account.',
   instagram_failed: 'Couldn’t connect Instagram. Please try again.',
 };
+
+const STEP_NAMES = { no_code: 'no code from Instagram', user: 'account check', code: 'code exchange', token: 'token', profile: 'reading your profile', save: 'saving' };
+
+/** Error text for ?social_error=…&step=… (the step helps support find the cause). */
+export function socialErrorText(params) {
+  const err = params.get('social_error');
+  const text = SOCIAL_ERRORS[err] ?? SOCIAL_ERRORS.instagram_failed;
+  const step = params.get('step');
+  return step && STEP_NAMES[step] ? `${text} (Failed at: ${STEP_NAMES[step]})` : text;
+}

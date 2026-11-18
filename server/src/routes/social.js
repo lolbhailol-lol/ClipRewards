@@ -46,11 +46,28 @@ router.get('/instagram/callback', async (req, res) => {
 
   if (error) return back({ social_error: reason === 'user_denied' ? 'instagram_cancelled' : 'instagram_failed' });
   if (!stateOk) return back({ social_error: 'instagram_expired' });
+  if (!code) return back({ social_error: 'instagram_failed', step: 'no_code' });
 
+  // iPhone Safari sometimes loads this URL twice. The code works only once, so the second
+  // load waits for the first one's result instead of failing with "code already used".
+  const key = `${state}|${code}`;
+  if (!inflight.has(key)) {
+    inflight.set(key, connectInstagram(userId, code));
+    setTimeout(() => inflight.delete(key), 5 * 60 * 1000).unref?.();
+  }
+  return back(await inflight.get(key));
+});
+
+const inflight = new Map(); // code → Promise<redirect query>
+
+/** Exchanges the code, saves the account. Returns the query string for the redirect back. */
+async function connectInstagram(userId, code) {
+  let step = 'start';
   try {
     const user = await User.findById(userId);
-    if (!user || user.role !== 'creator') return back({ social_error: 'instagram_failed' });
+    if (!user || user.role !== 'creator') return { social_error: 'instagram_failed', step: 'user' };
 
+    step = 'code';
     let short;
     try {
       short = await instagram.exchangeCode(code);
@@ -58,14 +75,17 @@ router.get('/instagram/callback', async (req, res) => {
       err.message = `code exchange: ${err.message}`;
       throw err;
     }
+    step = 'token';
     const long = await instagram.toLongLived(short.accessToken);
+    step = 'profile';
     const profile = await instagram.getProfile(long.accessToken, short.userId);
 
     // Instagram Login only works for professional accounts; if the type wasn't returned, let it through.
     if (profile.accountType && !['BUSINESS', 'MEDIA_CREATOR'].includes(String(profile.accountType).toUpperCase())) {
-      return back({ social_error: 'instagram_not_professional' });
+      return { social_error: 'instagram_not_professional' };
     }
 
+    step = 'save';
     await SocialAccount.findOneAndUpdate(
       { userId: user._id, platform: 'instagram' },
       {
@@ -87,13 +107,19 @@ router.get('/instagram/callback', async (req, res) => {
     );
     user.creator.instagram = profile.username;
     await user.save();
-    return back({ connected: 'instagram' });
+    return { connected: 'instagram' };
   } catch (err) {
-    if (isDup(err)) return back({ social_error: 'instagram_taken' });
-    console.warn('[social] Instagram connect failed:', err.status || '', err.message);
-    return back({ social_error: 'instagram_failed' });
+    if (isDup(err)) return { social_error: 'instagram_taken' };
+    console.warn(`[social] Instagram connect failed at ${step}:`, err.status || '', err.message);
+    // Code already used (e.g. a second server instance got the repeat load): if this user's
+    // Instagram was saved in the last few minutes, the first load worked, so report success.
+    if (step === 'code') {
+      const recent = await SocialAccount.findOne({ userId, platform: 'instagram', status: 'active', lastSyncedAt: { $gt: new Date(Date.now() - 3 * 60 * 1000) } }).catch(() => null);
+      if (recent) return { connected: 'instagram' };
+    }
+    return { social_error: 'instagram_failed', step };
   }
-});
+}
 
 /* ---------------- Everything below needs a signed-in creator ---------------- */
 
