@@ -1,11 +1,12 @@
 import { NavLink, matchPath, useLocation } from 'react-router-dom';
-import { BarChart3, House, LayoutDashboard, LayoutGrid, UserRound, Wallet } from 'lucide-react';
+import { BarChart3, Film, House, LayoutDashboard, LayoutGrid, UserRound, Wallet } from 'lucide-react';
 import { useAuth } from '../lib/auth';
 import { cx } from '../ui';
 
 export const CREATOR_NAV = [
   { to: '/app', label: 'Home', icon: House, end: true },
   { to: '/app/campaigns', label: 'Campaigns', icon: LayoutGrid },
+  { to: '/app/clips', label: 'Clips', icon: Film },
   { to: '/app/insights', label: 'Insights', icon: BarChart3 },
   { to: '/app/earnings', label: 'Earnings', icon: Wallet },
 ];

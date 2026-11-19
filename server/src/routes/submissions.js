@@ -88,8 +88,30 @@ router.get('/mine', async (req, res) => {
   const filter = { creatorId: req.user._id };
   if (mongoose.isValidObjectId(req.query.campaignId)) filter.campaignId = req.query.campaignId;
   const subs = await Submission.find(filter).sort({ createdAt: -1 }).limit(200);
-  const campaigns = new Map((await Campaign.find({ _id: { $in: subs.map((s) => s.campaignId) } }, 'title ratePer1kPaise')).map((c) => [c._id.toString(), c]));
-  res.json({ submissions: subs.map((s) => s.toPublic(campaigns.get(s.campaignId.toString()))) });
+  const campaignDocs = await Campaign.find({ _id: { $in: subs.map((s) => s.campaignId) } }, 'title ratePer1kPaise status coverUrl brandId').lean();
+  const brands = new Map((await Brand.find({ _id: { $in: campaignDocs.map((c) => c.brandId) } }, 'company').lean()).map((b) => [b._id.toString(), b.company]));
+  const campaigns = new Map(campaignDocs.map((c) => [c._id.toString(), c]));
+
+  // Per clip: how much of what it earned is still on the 7-day hold.
+  const now = new Date();
+  const held = new Map(
+    (
+      await Earning.aggregate([
+        { $match: { submissionId: { $in: subs.map((s) => s._id) }, availableAt: { $gt: now } } },
+        { $group: { _id: '$submissionId', paise: { $sum: '$amountPaise' } } },
+      ])
+    ).map((r) => [r._id.toString(), Math.max(0, r.paise)])
+  );
+
+  res.json({
+    submissions: subs.map((s) => {
+      const c = campaigns.get(s.campaignId.toString());
+      const out = s.toPublic(c);
+      if (c) Object.assign(out.campaign, { status: c.status, coverUrl: c.coverUrl || '', brand: brands.get(String(c.brandId)) || '' });
+      out.heldPaise = held.get(s._id.toString()) || 0;
+      return out;
+    }),
+  });
 });
 
 router.get('/wallet', async (req, res) => {

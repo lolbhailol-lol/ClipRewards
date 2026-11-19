@@ -8,6 +8,7 @@ import { CREATOR_NAV } from './layouts/BottomNav';
 import Landing from './pages/Landing';
 import PublicCampaigns from './pages/PublicCampaigns';
 import CampaignDetail from './pages/CampaignDetail';
+import MyClips from './pages/creator/MyClips';
 import { Privacy, Terms } from './pages/Legal';
 import Login from './pages/Login';
 import ChooseRole from './pages/ChooseRole';
@@ -76,7 +77,7 @@ export default function App() {
         <Route path="earnings" element={<Earnings />} />
         <Route path="profile" element={<Profile />} />
         <Route path="wallet" element={<Navigate to="/app/earnings" replace />} />
-        <Route path="clips" element={<Navigate to="/app/campaigns" replace />} />
+        <Route path="clips" element={<MyClips />} />
       </Route>
 
       <Route path="/brand" element={<Gate role="brand"><AppShell nav={BRAND_NAV} accountTo="/brand/account" section="Brand" /></Gate>}>
