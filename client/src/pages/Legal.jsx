@@ -1,4 +1,6 @@
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '../lib/api';
 
 const UPDATED = '18 November 2026';
 const NAME = import.meta.env.VITE_LEGAL_NAME || 'CreatorPerks';
@@ -139,6 +141,13 @@ export function Privacy() {
         <ul>
           <li>Disconnect Instagram or YouTube any time from Profile → Connected accounts.</li>
           <li>Ask us for a copy of your data, to correct it, or to delete your account by contacting us at <Contact />.</li>
+          <li>
+            See{' '}
+            <Link to="/data-deletion" className="underline underline-offset-4">
+              how to delete your data
+            </Link>{' '}
+            for step-by-step instructions.
+          </li>
           <li>You can withdraw consent at any time; this doesn’t affect anything done before.</li>
         </ul>
       </section>
@@ -249,6 +258,95 @@ export function Terms() {
           </Link>
           .
         </p>
+      </section>
+    </Doc>
+  );
+}
+
+const A = ({ href, children }) => (
+  <a href={href} target="_blank" rel="noreferrer" className="underline underline-offset-4">
+    {children}
+  </a>
+);
+
+/** Shows the status of a deletion Meta sent us (/data-deletion?code=…). */
+function DeletionStatus({ code }) {
+  const { data, error, isPending } = useQuery({ queryKey: ['deletion', code], queryFn: () => api(`/data-deletion/${encodeURIComponent(code)}`), retry: false });
+  return (
+    <section className="glass rounded-3xl p-5">
+      <h2>Your request</h2>
+      <p>
+        Confirmation code: <span className="font-mono text-text">{code}</span>
+      </p>
+      <p className="mt-1">
+        {isPending
+          ? 'Checking…'
+          : error
+            ? error.message
+            : `Done. Your Instagram connection, access token and stored Instagram data were deleted on ${new Date(data.requestedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}.`}
+      </p>
+    </section>
+  );
+}
+
+export function DataDeletion() {
+  const [params] = useSearchParams();
+  const code = params.get('code');
+  return (
+    <Doc title="Delete your data">
+      {code && <DeletionStatus code={code} />}
+      <section>
+        <p>
+          You can remove your data from {NAME} at any time. Here is what each option deletes and how long it takes. See our{' '}
+          <Link to="/privacy" className="underline underline-offset-4">
+            Privacy Policy
+          </Link>{' '}
+          for what we collect.
+        </p>
+      </section>
+
+      <section>
+        <h2>Disconnect Instagram or YouTube (instant)</h2>
+        <ul>
+          <li>Sign in, open <strong>Profile → Connected accounts</strong> and tap <strong>Disconnect</strong>.</li>
+          <li>We immediately delete the stored connection, the Instagram access token and all cached insights for that account.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Remove us from Instagram (instant)</h2>
+        <ul>
+          <li>
+            On Instagram go to <strong>Settings → Apps and websites</strong> (
+            <A href="https://www.instagram.com/accounts/manage_access/">open it here</A>), find {NAME} and tap <strong>Remove</strong>.
+          </li>
+          <li>Instagram tells us automatically, and we delete your Instagram connection, token and stored Instagram data straight away.</li>
+          <li>If you also ask Instagram to delete your data, you’ll get a confirmation code. You can check its status on this page.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Remove us from Google / YouTube</h2>
+        <ul>
+          <li>
+            Go to <A href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</A>, choose {NAME} and remove access.
+          </li>
+          <li>We never store your Google access token, so nothing more is needed. Disconnect YouTube in Profile to delete your stored channel details too.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Delete your whole account (within 30 days)</h2>
+        <ul>
+          <li>
+            Contact us at <Contact /> from the email address you sign in with, with the subject <strong>“Delete my account”</strong>.
+          </li>
+          <li>We delete your profile, connected accounts, clips and insights within 30 days and confirm by email.</li>
+          <li>
+            If you’ve earned or been paid money, we keep the earnings and payout records Indian tax and accounting law requires (usually 8 years), and
+            nothing else. Withdraw any balance first, as it can’t be paid after deletion.
+          </li>
+        </ul>
       </section>
     </Doc>
   );

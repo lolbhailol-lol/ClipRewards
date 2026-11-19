@@ -62,6 +62,8 @@ function createApp({ rateLimits = process.env.NODE_ENV !== 'test', serveClient =
   const igWebhook = require('./routes/igWebhook');
   app.get('/api/social/instagram/webhook', igWebhook.verify);
   app.post('/api/social/instagram/webhook', express.raw({ type: '*/*', limit: '1mb' }), igWebhook.receive);
+  // Meta's deauthorize and data deletion callbacks (form-encoded signed_request).
+  app.use(require('./routes/igDataDeletion').router);
 
   app.use(express.json({ limit: '100kb' }));
 

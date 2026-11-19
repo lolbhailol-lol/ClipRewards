@@ -9,7 +9,7 @@ import Landing from './pages/Landing';
 import PublicCampaigns from './pages/PublicCampaigns';
 import CampaignDetail from './pages/CampaignDetail';
 import MyClips from './pages/creator/MyClips';
-import { Privacy, Terms } from './pages/Legal';
+import { DataDeletion, Privacy, Terms } from './pages/Legal';
 import Login from './pages/Login';
 import ChooseRole from './pages/ChooseRole';
 import CreatorOnboarding from './pages/onboarding/CreatorOnboarding';
@@ -63,6 +63,7 @@ export default function App() {
         <Route path="campaigns/:id" element={<CampaignDetail />} />
         <Route path="privacy" element={<Privacy />} />
         <Route path="terms" element={<Terms />} />
+        <Route path="data-deletion" element={<DataDeletion />} />
       </Route>
       <Route path="/login" element={<Login />} />
 
