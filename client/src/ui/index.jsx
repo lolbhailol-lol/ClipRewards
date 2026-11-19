@@ -305,13 +305,14 @@ export function PageHeader({ title, subtitle, actions, eyebrow }) {
   );
 }
 
-/** CreatorPerks mark: a "C" ring (clip) wrapped around a play button, in a rounded square. */
+/** CreatorPerks mark: a "C" (creator) around a play button, with a sparkle (perks), in a rounded square. */
 export function LogoMark({ className = 'size-7' }) {
   return (
     <svg viewBox="0 0 32 32" className={className} aria-hidden>
       <rect width="32" height="32" rx="9" fill="var(--text)" />
-      <path d="M21.66 10.34A8 8 0 1 0 21.66 21.66" fill="none" stroke="var(--bg)" strokeWidth="3.2" strokeLinecap="round" />
-      <path d="M14 12.4v7.2l5.8-3.6z" fill="var(--bg)" strokeLinejoin="round" />
+      <path d="M20.5 9.6A8 8 0 1 0 21.66 21.66" fill="none" stroke="var(--bg)" strokeWidth="3.2" strokeLinecap="round" />
+      <path d="M13.6 12.6v6.8l5.5-3.4z" fill="var(--bg)" />
+      <path d="M24.2 6.2C24.5 8 25 8.5 26.8 8.8C25 9.1 24.5 9.6 24.2 11.4C23.9 9.6 23.4 9.1 21.6 8.8C23.4 8.5 23.9 8 24.2 6.2Z" fill="var(--bg)" />
     </svg>
   );
 }
