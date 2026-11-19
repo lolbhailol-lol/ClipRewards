@@ -49,6 +49,7 @@ submissionSchema.methods.toPublic = function toPublic(campaign) {
     publishedAt: this.publishedAt,
     status: this.status,
     reviewNote: this.reviewNote,
+    reviewedAt: this.reviewedAt,
     views: this.views,
     likes: this.likes,
     comments: this.comments,
