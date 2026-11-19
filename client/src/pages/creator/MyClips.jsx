@@ -21,7 +21,13 @@ const FILTERS = [
   { value: 'rejected', label: 'Rejected' },
 ];
 
-const date = (d) => (d ? new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—');
+// "18 Nov" this year, "18 Nov 25" for older posts (fits the narrow phone column).
+const date = (d) => {
+  if (!d) return '—';
+  const dt = new Date(d);
+  const sameYear = dt.getFullYear() === new Date().getFullYear();
+  return dt.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', ...(sameYear ? {} : { year: '2-digit' }) });
+};
 
 /** Every clip the creator has submitted: status, campaign, views and earnings. */
 export default function MyClips() {

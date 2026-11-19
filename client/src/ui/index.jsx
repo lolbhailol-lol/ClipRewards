@@ -13,7 +13,7 @@ const BUTTON = {
   base: 'inline-flex items-center justify-center gap-2 rounded-full font-medium transition-[background,opacity,transform] active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none select-none whitespace-nowrap',
   size: { sm: 'h-9 px-4 text-[13px]', md: 'h-11 px-5 text-sm', lg: 'h-[52px] px-6 text-[15px]' },
   variant: {
-    primary: 'btn-shine bg-primary text-primary-fg hover:bg-primary-hover',
+    primary: 'btn-shine bg-primary text-primary-fg hover:bg-primary-hover shadow-[0_0_24px_var(--glow)]',
     secondary: 'glass text-text hover:bg-glass-2',
     ghost: 'text-muted hover:text-text hover:bg-glass',
     danger: 'bg-danger text-white hover:opacity-90',
@@ -218,14 +218,14 @@ const DOT = {
   success: 'bg-success',
   warning: 'bg-warning',
   danger: 'bg-danger',
-  live: 'bg-success text-success live-dot',
+  live: 'bg-accent text-accent live-dot',
 };
 const PILL = {
   neutral: 'text-muted',
   success: 'text-success bg-success-soft',
   warning: 'text-warning bg-warning-soft',
   danger: 'text-danger bg-danger-soft',
-  live: 'text-success bg-success-soft',
+  live: 'text-accent bg-accent-soft',
 };
 
 /** Status pill: dot + text, tinted only for real status. */

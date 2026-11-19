@@ -81,9 +81,9 @@ export default function Landing() {
               className="fade-up mt-5 text-[40px] font-semibold leading-[1.05] tracking-[-0.035em] sm:text-6xl md:text-7xl"
               style={{ animationDelay: '80ms' }}
             >
-              <span className="text-faint">Creators earn on</span> <span className="text-sheen">views.</span>
+              <span className="text-faint">Creators earn on</span> <span className="grad">views.</span>
               <br />
-              <span className="text-faint">Brands pay for</span> <span className="text-sheen">results.</span>
+              <span className="text-faint">Brands pay for</span> <span className="grad">results.</span>
             </h1>
             <p className="fade-up mx-auto mt-6 max-w-xl text-[17px] leading-relaxed text-muted" style={{ animationDelay: '160ms' }}>
               Brands set a rate per 1,000 views. Creators post edited Reels and Shorts. Every clip is approved, and only real views are paid.

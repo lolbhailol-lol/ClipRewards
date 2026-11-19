@@ -44,7 +44,7 @@ export default function AppShell({ nav, accountTo, section }) {
               className={({ isActive }) =>
                 cx(
                   'flex h-11 items-center gap-3 rounded-2xl px-3.5 text-sm font-medium transition-colors',
-                  isActive ? 'bg-glass-3 text-text shadow-[inset_0_1px_0_var(--glass-hi)]' : 'text-muted hover:bg-glass-2 hover:text-text'
+                  isActive ? 'bg-glass-3 text-primary shadow-[inset_0_1px_0_var(--glass-hi)]' : 'text-muted hover:bg-glass-2 hover:text-text'
                 )
               }
             >
