@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Eye, Heart, Link2, MessageCircle, Repeat2, Bookmark, Users, X } from 'lucide-react';
 import { api } from '../lib/api';
 import { compact, timeAgo } from '../lib/format';
 import { useYouTubeConnect } from '../lib/useYouTubeConnect';
-import { socialErrorText, startInstagramConnect } from '../lib/social';
+import { startInstagramConnect } from '../lib/social';
 import { InstagramIcon, YoutubeIcon } from '../ui/PlatformIcons';
 import { Button, Card, Field, Input, ListGroup, Notice, Skeleton, Status } from '../ui';
 
@@ -18,27 +17,13 @@ export function useSocialAccounts() {
   return useQuery({ queryKey: ['social'], queryFn: () => api('/social/accounts') });
 }
 
-/** Connect / disconnect Instagram and YouTube. Shows the result of the Instagram redirect. */
+/** Connect / disconnect Instagram and YouTube. */
 export default function SocialAccounts() {
   const qc = useQueryClient();
-  const [params, setParams] = useSearchParams();
   const [banner, setBanner] = useState(null);
   const { data, isPending, error } = useSocialAccounts();
 
-  // Instagram sends the browser back here with ?connected= or ?social_error=
-  useEffect(() => {
-    const connected = params.get('connected');
-    const err = params.get('social_error');
-    if (!connected && !err) return;
-    setBanner(connected ? { tone: 'success', text: `${PLATFORMS[connected]?.name ?? 'Account'} connected.` } : { tone: 'danger', text: socialErrorText(params) });
-    params.delete('connected');
-    params.delete('social_error');
-    params.delete('step');
-    setParams(params, { replace: true });
-    qc.invalidateQueries({ queryKey: ['social'] });
-    qc.invalidateQueries({ queryKey: ['me'] });
-  }, [params, setParams, qc]);
-
+  // The Instagram redirect result is shown app-wide by <SocialReturn /> in AppShell.
   const instagram = useMutation({ mutationFn: () => startInstagramConnect('/app/profile') });
   const yt = useYouTubeConnect({ onConnected: () => setBanner({ tone: 'success', text: 'YouTube connected.' }) });
   // Same shape as the Instagram mutation for the row buttons below.

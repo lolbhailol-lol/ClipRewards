@@ -5,6 +5,7 @@ import { useAuth } from '../lib/auth';
 import { Avatar, Logo, cx } from '../ui';
 import BottomNav from './BottomNav';
 import MenuDrawer from './MenuDrawer';
+import SocialReturn from '../components/SocialReturn';
 
 /**
  * App frame for every signed-in area.
@@ -25,6 +26,7 @@ export default function AppShell({ nav, accountTo, section }) {
 
   return (
     <div className="min-h-dvh md:pl-[17rem]">
+      <SocialReturn />
       {/* Desktop sidebar */}
       <aside className="fixed inset-y-3 left-3 hidden w-64 flex-col rounded-3xl md:flex glass-solid">
         <div className="flex h-16 items-center px-5">
