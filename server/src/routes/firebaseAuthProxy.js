@@ -23,6 +23,11 @@ function firebaseAuthProxy() {
         redirect: 'manual',
       });
       res.status(upstream.status);
+      // Firebase serves these pages without these headers. A Cross-Origin-Opener-Policy here cuts
+      // the link between the sign-in popup and the page that opened it, so the popup never
+      // finishes ("keeps loading" after choosing an account).
+      res.removeHeader('Cross-Origin-Opener-Policy');
+      res.removeHeader('Referrer-Policy');
       upstream.headers.forEach((v, k) => {
         if (!HOP.has(k.toLowerCase())) res.setHeader(k, v);
       });
