@@ -21,8 +21,7 @@ import { useAuth } from '../../lib/auth';
 import { compact, rupees } from '../../lib/format';
 import { startInstagramConnect } from '../../lib/social';
 import { THEME_OPTIONS, useTheme } from '../../lib/theme';
-import { InstagramIcon, YoutubeIcon } from '../../ui/PlatformIcons';
-import { useYouTubeConnect } from '../../lib/useYouTubeConnect';
+import { InstagramIcon } from '../../ui/PlatformIcons';
 import CampaignCard from '../../components/CampaignCard';
 import CampaignBrowser, { useCampaigns } from '../../components/CampaignBrowser';
 import SocialAccounts, { CheckPost, useSocialAccounts } from '../../components/SocialAccounts';
@@ -58,7 +57,7 @@ export function Home() {
         </div>
       </header>
 
-      {!accounts.isPending && !hasAccount && <ConnectPrompt available={accounts.data?.available} />}
+      {!accounts.isPending && !hasAccount && <ConnectPrompt available={accounts.data?.available?.instagram} />}
 
       <Link to="/app/earnings" className="glass block rounded-3xl p-5 transition-colors hover:bg-glass-2">
         <div className="flex items-center justify-between">
@@ -90,35 +89,6 @@ export function Home() {
 
 function ConnectPrompt({ available }) {
   const connect = useMutation({ mutationFn: () => startInstagramConnect('/app') });
-  const yt = useYouTubeConnect();
-  const igOpen = available?.instagram && available?.instagramOpen;
-
-  // Instagram is invite-only until Meta approves the app: lead with YouTube, which works for everyone.
-  if (!igOpen) {
-    return (
-      <Card className="p-5">
-        <div className="flex items-start gap-4">
-          <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-primary text-primary-fg">
-            <YoutubeIcon className="size-6" />
-          </span>
-          <div className="min-w-0 flex-1">
-            <p className="font-medium">Connect YouTube to start earning</p>
-            <p className="mt-1 text-sm text-muted">We track your Shorts views automatically. Instagram is invite-only for now; you can request access in Profile.</p>
-          </div>
-        </div>
-        {yt.error && <Notice tone="danger" className="mt-4">{yt.error.message}</Notice>}
-        <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-          <Button arrow loading={yt.isPending} disabled={!available?.youtube} onClick={yt.connect}>
-            Connect YouTube
-          </Button>
-          <Button to="/app/profile" variant="ghost">
-            Request Instagram access
-          </Button>
-        </div>
-      </Card>
-    );
-  }
-
   return (
     <Card className="p-5">
       <div className="flex items-start gap-4">
@@ -132,7 +102,7 @@ function ConnectPrompt({ available }) {
       </div>
       {connect.error && <Notice tone="danger" className="mt-4">{connect.error.message}</Notice>}
       <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-        <Button arrow loading={connect.isPending} onClick={() => connect.mutate()}>
+        <Button arrow loading={connect.isPending} disabled={!available} onClick={() => connect.mutate()}>
           Connect Instagram
         </Button>
         <Button to="/app/profile" variant="ghost">

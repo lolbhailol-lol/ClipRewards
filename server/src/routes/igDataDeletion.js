@@ -42,7 +42,7 @@ async function deleteInstagramData(igUserId) {
   for (const acc of accounts) {
     await InsightsCache.deleteMany({ accountId: acc._id });
     await SocialAccount.deleteOne({ _id: acc._id });
-    await User.updateOne({ _id: acc.userId }, { $set: { 'creator.instagram': '', 'creator.igAccess.status': '' } });
+    await User.updateOne({ _id: acc.userId }, { $set: { 'creator.instagram': '' } });
   }
   return accounts.length;
 }

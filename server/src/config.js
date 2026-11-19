@@ -30,9 +30,6 @@ const instagram = {
   // Defaults to <clientOrigin>/api/social/instagram/callback. Must match Meta's dashboard exactly.
   redirectUri: igRedirect,
   graphVersion: process.env.INSTAGRAM_GRAPH_VERSION || 'v27.0',
-  // false while the Meta app is in Development mode (only invited testers can connect).
-  // Set INSTAGRAM_OPEN=true once Meta approves App Review and the app is switched to Live.
-  open: process.env.INSTAGRAM_OPEN === 'true',
   // Any random string; paste the same value as the Verify token in Meta's webhook settings.
   webhookVerifyToken: process.env.INSTAGRAM_WEBHOOK_VERIFY_TOKEN || '',
 };

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Building2, Check, Copy, ExternalLink, Inbox, IndianRupee, LogOut, Megaphone, Moon } from 'lucide-react';
-import { InstagramIcon } from '../../ui/PlatformIcons';
+import { Building2, Check, Inbox, IndianRupee, LogOut, Megaphone, Moon } from 'lucide-react';
 import { api } from '../../lib/api';
 import { useAuth } from '../../lib/auth';
 import { timeAgo, verticalLabel } from '../../lib/format';
@@ -50,13 +49,6 @@ export function AdminOverview() {
         <ListRow icon={IndianRupee} title="Payouts" subtitle="Pay creators’ withdrawal requests" to="/admin/payouts" />
         <ListRow icon={Building2} title="Review brands" subtitle="Approve new brands before their campaigns go live" to="/admin/brands" />
         <ListRow icon={Inbox} title="Pilot requests" subtitle="Brands who asked for a pilot from the website" to="/admin/leads" />
-        <ListRow
-          icon={InstagramIcon}
-          title="Instagram access"
-          subtitle="Creators waiting to be added as Instagram testers"
-          trailing={data?.igRequests ? `${data.igRequests} waiting` : undefined}
-          to="/admin/instagram"
-        />
       </ListGroup>
 
       <ListGroup title="Preferences" className="mt-8">
@@ -279,100 +271,6 @@ export function AdminLeads() {
                 <span className="text-muted">Budget: {l.budget || '—'}</span>
               </div>
               {l.message && <p className="mt-3 border-l-2 border-border-strong pl-3 text-sm text-muted">{l.message}</p>}
-            </div>
-          ))}
-        </Card>
-      )}
-    </>
-  );
-}
-
-const IG_TABS = [
-  { value: 'requested', label: 'Waiting' },
-  { value: 'invited', label: 'Invited' },
-  { value: 'connected', label: 'Connected' },
-];
-
-/**
- * Instagram early access. Until Meta approves the app, each creator's Instagram account
- * has to be added by hand as an Instagram Tester in the Meta dashboard.
- */
-export function AdminInstagram() {
-  const qc = useQueryClient();
-  const [tab, setTab] = useState('requested');
-  const [copied, setCopied] = useState('');
-  const { data, isPending, error } = useQuery({ queryKey: ['admin', 'instagram-access'], queryFn: () => api('/admin/instagram-access') });
-  const update = useMutation({
-    mutationFn: ({ id, status }) => api(`/admin/instagram-access/${id}`, { method: 'PATCH', body: { status } }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin'] }),
-  });
-  const all = data?.requests ?? [];
-  const shown = all.filter((r) => r.status === tab);
-  const count = (s) => all.filter((r) => r.status === s).length;
-  const copy = (u) => {
-    navigator.clipboard?.writeText(u).catch(() => {});
-    setCopied(u);
-    setTimeout(() => setCopied(''), 1500);
-  };
-
-  return (
-    <>
-      <PageHeader eyebrow="Admin" title="Instagram access" subtitle="Until Meta approves the app, only Instagram accounts added as testers can connect." />
-      <Notice title="How to add a creator" className="mb-5">
-        <ol className="mt-1 list-decimal space-y-1 pl-4">
-          <li>
-            Copy their username, then open{' '}
-            <a href="https://developers.facebook.com/apps/" target="_blank" rel="noreferrer" className="text-text underline underline-offset-4">
-              Meta for Developers
-            </a>{' '}
-            → your app → App roles → Roles → Add people → Instagram Tester.
-          </li>
-          <li>Paste the username and add them, then tap <strong className="text-text">Mark invited</strong> here.</li>
-          <li>The creator sees steps to accept the invite on Instagram, then connects.</li>
-        </ol>
-      </Notice>
-      <Segmented
-        label="Request status"
-        value={tab}
-        onChange={setTab}
-        className="mb-4 w-full sm:w-auto"
-        options={IG_TABS.map((t) => ({ ...t, count: data ? count(t.value) : undefined }))}
-      />
-      {error && <Notice tone="danger">{error.message}</Notice>}
-      {update.error && <Notice tone="danger" className="mb-3">{update.error.message}</Notice>}
-      {isPending ? (
-        <Skeleton className="h-40" />
-      ) : shown.length === 0 ? (
-        <EmptyState icon={InstagramIcon} title={tab === 'requested' ? 'No one waiting' : 'No one here yet'}>
-          {tab === 'requested' ? 'When creators ask for Instagram access in their Profile, they show up here.' : 'Creators move here as you invite them and they connect.'}
-        </EmptyState>
-      ) : (
-        <Card className="divide-y divide-border">
-          {shown.map((r) => (
-            <div key={r.id} className="flex flex-wrap items-center gap-3 p-4">
-              <div className="min-w-0 flex-1">
-                <a href={`https://www.instagram.com/${r.username}/`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 font-medium hover:underline">
-                  @{r.username} <ExternalLink className="size-3.5 text-faint" aria-hidden />
-                </a>
-                <p className="mt-0.5 truncate text-[13px] text-muted">
-                  {r.name || 'Creator'} · {r.email} · {timeAgo(r.status === 'invited' && r.invitedAt ? r.invitedAt : r.requestedAt)}
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <Button size="sm" variant="secondary" onClick={() => copy(r.username)}>
-                  <Copy className="size-3.5" aria-hidden /> {copied === r.username ? 'Copied' : 'Copy'}
-                </Button>
-                {r.status === 'requested' && (
-                  <Button size="sm" loading={update.isPending && update.variables?.id === r.id} onClick={() => update.mutate({ id: r.id, status: 'invited' })}>
-                    <Check className="size-3.5" aria-hidden /> Mark invited
-                  </Button>
-                )}
-                {r.status === 'invited' && (
-                  <Button size="sm" variant="ghost" onClick={() => update.mutate({ id: r.id, status: 'requested' })}>
-                    Undo
-                  </Button>
-                )}
-              </div>
             </div>
           ))}
         </Card>

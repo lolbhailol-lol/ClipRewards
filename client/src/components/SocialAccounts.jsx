@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Eye, Heart, Link2, MessageCircle, Repeat2, Bookmark, Users, X } from 'lucide-react';
 import { api } from '../lib/api';
-import { useAuth } from '../lib/auth';
 import { compact, timeAgo } from '../lib/format';
 import { useYouTubeConnect } from '../lib/useYouTubeConnect';
 import { startInstagramConnect } from '../lib/social';
@@ -23,11 +22,6 @@ export default function SocialAccounts() {
   const qc = useQueryClient();
   const [banner, setBanner] = useState(null);
   const { data, isPending, error } = useSocialAccounts();
-  const { user } = useAuth();
-  const [requestOpen, setRequestOpen] = useState(false);
-  // Until Meta approves the app, only invited Instagram testers can connect.
-  const igLocked = Boolean(data?.available?.instagram && !data?.available?.instagramOpen);
-  const igAccess = user?.creator?.igAccess || {};
 
   // The Instagram redirect result is shown app-wide by <SocialReturn /> in AppShell.
   const instagram = useMutation({ mutationFn: () => startInstagramConnect('/app/profile') });
@@ -91,20 +85,14 @@ export default function SocialAccounts() {
                     <span className="mt-0.5 block text-[13px] leading-snug text-muted">
                       {acc
                         ? `${p.name}${acc.followers != null ? ` · ${compact(acc.followers)} ${p.unit}` : ''} · connected ${timeAgo(acc.connectedAt)}`
-                        : key === 'instagram' && igLocked
-                          ? IG_ACCESS_TEXT[igAccess.status]?.(igAccess.username) ?? 'Invite-only for now, while Instagram reviews our app.'
-                          : available
-                            ? p.why
-                            : 'Coming soon'}
+                        : available
+                          ? p.why
+                          : 'Coming soon'}
                     </span>
                   </span>
                   {acc && acc.status !== 'expired' ? (
                     <Button size="sm" variant="ghost" loading={disconnect.isPending && disconnect.variables === key} onClick={() => disconnect.mutate(key)}>
                       Disconnect
-                    </Button>
-                  ) : key === 'instagram' && igLocked && !acc && !['invited', 'connected'].includes(igAccess.status) ? (
-                    <Button size="sm" variant={igAccess.status === 'requested' ? 'secondary' : 'primary'} onClick={() => setRequestOpen((o) => !o)}>
-                      {igAccess.status === 'requested' ? 'Edit' : 'Request access'}
                     </Button>
                   ) : (
                     <Button size="sm" disabled={!available} loading={m.isPending} onClick={() => m.mutate()}>
@@ -115,71 +103,8 @@ export default function SocialAccounts() {
               );
             })}
       </ListGroup>
-      {igLocked && !byPlatform.instagram && (requestOpen || igAccess.status === 'invited') && (
-        <InstagramAccess status={igAccess.status} username={igAccess.username} onDone={() => setRequestOpen(false)} />
-      )}
       <p className="mt-2 px-1 text-[13px] text-faint">Instagram opens in your browser: log in once if asked, then tap Allow. We read views and engagement only and can’t post, comment or message from your account.</p>
     </section>
-  );
-}
-
-const IG_ACCESS_TEXT = {
-  requested: (u) => `Requested for @${u}. We add new creators every day; check back here.`,
-  invited: (u) => `You’re invited as @${u}. Accept the invite on Instagram, then tap Connect.`,
-};
-
-/** Instagram early access: ask to be added, or (once added) how to accept the invite. */
-function InstagramAccess({ status, username = '', onDone }) {
-  const { setMe } = useAuth();
-  const [handle, setHandle] = useState(username);
-  const request = useMutation({
-    mutationFn: () => api('/social/instagram/request', { method: 'POST', body: { username: handle } }),
-    onSuccess: ({ user }) => {
-      setMe({ user });
-      onDone();
-    },
-  });
-
-  if (status === 'invited') {
-    return (
-      <Notice title="Accept your Instagram invite" className="mt-3">
-        <ol className="mt-1 list-decimal space-y-1 pl-4">
-          <li>
-            Open{' '}
-            <a href="https://www.instagram.com/accounts/manage_access/" target="_blank" rel="noreferrer" className="text-text underline underline-offset-4">
-              Instagram → Apps and websites
-            </a>{' '}
-            in your browser, logged in as @{username}.
-          </li>
-          <li>Go to the <strong className="text-text">Tester invites</strong> tab and tap <strong className="text-text">Accept</strong> for CreatorPerks.</li>
-          <li>Come back here and tap <strong className="text-text">Connect</strong>.</li>
-        </ol>
-      </Notice>
-    );
-  }
-
-  return (
-    <Card className="mt-3 p-4">
-      <p className="text-sm font-medium">Get Instagram access</p>
-      <p className="mt-1 text-[13px] text-muted">
-        Instagram is checking our app before everyone can connect. Until then we add creators by hand, usually within a day. Your account must be a Creator or
-        Business account.
-      </p>
-      <form
-        className="mt-3 flex flex-col gap-2 sm:flex-row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          request.mutate();
-        }}
-      >
-        <label htmlFor="ig-handle" className="sr-only">Instagram username</label>
-        <Input id="ig-handle" required autoCapitalize="none" autoCorrect="off" placeholder="Your Instagram username" value={handle} onChange={(e) => setHandle(e.target.value)} className="sm:flex-1" />
-        <Button type="submit" loading={request.isPending}>
-          {status === 'requested' ? 'Update' : 'Request access'}
-        </Button>
-      </form>
-      {request.error && <p className="mt-2 text-[13px] text-danger">{request.error.message}</p>}
-    </Card>
   );
 }
 
