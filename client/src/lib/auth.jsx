@@ -70,7 +70,7 @@ export function takeNext() {
   try {
     const next = sessionStorage.getItem(NEXT_KEY);
     sessionStorage.removeItem(NEXT_KEY);
-    return next && next.startsWith('/') && !next.startsWith('//') ? next : null;
+    return next && next.startsWith('/') && !next.startsWith('//') && !next.startsWith('/\\') ? next : null;
   } catch {
     return null;
   }

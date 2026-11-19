@@ -44,7 +44,7 @@ function Gate({ role, onboarded = true, children }) {
   const location = useLocation();
   if (loading) return <Spinner />;
   if (!user) {
-    rememberNext(location.pathname);
+    rememberNext(location.pathname + location.search);
     return <Navigate to={role === 'brand' ? '/login?role=brand' : role === 'creator' ? '/login?role=creator' : '/login'} replace />;
   }
   if (role !== undefined && user.role !== role) return <Navigate to={homeFor(user)} replace />;

@@ -105,8 +105,7 @@ async function connectInstagram(userId, code) {
       },
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
-    user.creator.instagram = profile.username;
-    await user.save();
+    await User.updateOne({ _id: user._id }, { $set: { 'creator.instagram': profile.username } });
     return { connected: 'instagram' };
   } catch (err) {
     if (isDup(err)) return { social_error: 'instagram_taken' };
@@ -138,7 +137,7 @@ router.get('/instagram/start', (req, res) => {
   const state = jwt.sign(
     { sub: req.user._id.toString(), origin: safeOrigin(String(req.query.origin || '')), returnTo: safePath(req.query.returnTo) },
     config.jwtSecret,
-    { audience: 'ig-connect', expiresIn: '10m' }
+    { audience: 'ig-connect', expiresIn: '30m' } // time to log in to Instagram (password, 2-step code)
   );
   res.json({ url: instagram.authorizeUrl(state) });
 });
