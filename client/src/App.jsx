@@ -17,7 +17,7 @@ import BrandOnboarding from './pages/onboarding/BrandOnboarding';
 import { Campaigns, Earnings, Home, Profile } from './pages/creator/CreatorPages';
 import Insights from './pages/creator/Insights';
 import { BrandAccount, BrandCampaigns, BrandClips, BrandOverview } from './pages/brand/BrandPages';
-import { AdminBrands, AdminLeads, AdminOverview } from './pages/admin/AdminPages';
+import { AdminBrands, AdminInstagram, AdminLeads, AdminOverview } from './pages/admin/AdminPages';
 import { AdminCampaignEditor, AdminCampaigns } from './pages/admin/AdminCampaigns';
 import { AdminClips, AdminPayouts } from './pages/admin/AdminClips';
 
@@ -99,6 +99,7 @@ export default function App() {
         <Route path="payouts" element={<AdminPayouts />} />
         <Route path="brands" element={<AdminBrands />} />
         <Route path="leads" element={<AdminLeads />} />
+        <Route path="instagram" element={<AdminInstagram />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

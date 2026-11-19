@@ -383,3 +383,29 @@ describe('Instagram connect fallbacks', () => {
     expect(res.headers.location).toContain('step=code');
   });
 });
+
+describe('Instagram early access', () => {
+  test('creator requests access, admin marks invited, connecting marks connected', async () => {
+    const User = require('../src/models/User');
+    const { signToken } = require('../src/middleware/auth');
+    const c = await creator();
+    const admin = await User.create({ email: 'boss@test.local', role: 'admin', onboarded: true });
+    const adminAuth = { Authorization: `Bearer ${signToken(admin)}` };
+
+    await request(app).post('/api/social/instagram/request').set(c.auth).send({ username: 'not a handle!' }).expect(400);
+    const { body } = await request(app).post('/api/social/instagram/request').set(c.auth).send({ username: 'https://www.instagram.com/Riya.Edits/?hl=en' }).expect(200);
+    expect(body.user.creator.igAccess).toMatchObject({ status: 'requested', username: 'riya.edits' });
+
+    const stats = await request(app).get('/api/admin/stats').set(adminAuth).expect(200);
+    expect(stats.body.igRequests).toBe(1);
+    const list = await request(app).get('/api/admin/instagram-access').set(adminAuth).expect(200);
+    expect(list.body.requests).toHaveLength(1);
+    await request(app).patch(`/api/admin/instagram-access/${list.body.requests[0].id}`).set(adminAuth).send({ status: 'invited' }).expect(200);
+    await request(app).get('/api/admin/instagram-access').set(c.auth).expect(403);
+
+    const me = await request(app).get('/api/auth/me').set(c.auth).expect(200);
+    expect(me.body.user.creator.igAccess.status).toBe('invited');
+    const acc = await request(app).get('/api/social/accounts').set(c.auth).expect(200);
+    expect(acc.body.available.instagramOpen).toBe(false);
+  });
+});

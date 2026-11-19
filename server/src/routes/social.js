@@ -127,7 +127,10 @@ async function connectInstagram(userId, code) {
       },
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
-    if (profile.username) await User.updateOne({ _id: user._id }, { $set: { 'creator.instagram': profile.username } });
+    await User.updateOne(
+      { _id: user._id },
+      { $set: { 'creator.igAccess.status': 'connected', ...(profile.username ? { 'creator.instagram': profile.username } : {}) } }
+    );
     return { connected: 'instagram' };
   } catch (err) {
     if (isDup(err)) return { social_error: 'instagram_taken' };
@@ -150,8 +153,24 @@ router.get('/accounts', async (req, res) => {
   const accounts = await SocialAccount.find({ userId: req.user._id });
   res.json({
     accounts: accounts.map((a) => a.toPublic()),
-    available: { instagram: igReady(), youtube: Boolean(config.firebaseProjectId), youtubeStats: Boolean(config.youtubeApiKey) },
+    available: { instagram: igReady(), instagramOpen: config.instagram.open, youtube: Boolean(config.firebaseProjectId), youtubeStats: Boolean(config.youtubeApiKey) },
   });
+});
+
+/** Instagram early access: the creator asks to be added as a tester in Meta. */
+const IG_HANDLE = /^[a-z0-9._]{1,30}$/;
+const igHandle = z
+  .string()
+  .trim()
+  .transform((v) => v.replace(/^https?:\/\/(www\.)?instagram\.com\//i, '').replace(/^@/, '').replace(/[/?#].*$/, '').toLowerCase())
+  .refine((v) => IG_HANDLE.test(v), { message: 'Enter your Instagram username, like riya.edits' });
+
+router.post('/instagram/request', validate(z.object({ username: igHandle })), async (req, res) => {
+  const acc = req.user.creator.igAccess || {};
+  const same = acc.username === req.body.username && ['invited', 'connected'].includes(acc.status);
+  req.user.creator.igAccess = same ? acc : { status: 'requested', username: req.body.username, requestedAt: new Date() };
+  await req.user.save();
+  res.json({ user: req.user.toPublic() });
 });
 
 router.get('/instagram/start', (req, res) => {

@@ -16,6 +16,14 @@ const userSchema = new Schema(
       instagram: { type: String, trim: true, default: '' },
       youtube: { type: String, trim: true, default: '' },
       upiId: { type: String, trim: true, default: '' },
+      // Instagram early access: until Meta approves the app, only Instagram accounts added as
+      // testers in Meta can connect. Creators request access here; an admin adds them in Meta.
+      igAccess: {
+        status: { type: String, enum: ['', 'requested', 'invited', 'connected'], default: '' },
+        username: { type: String, trim: true, default: '' },
+        requestedAt: Date,
+        invitedAt: Date,
+      },
     },
     brandId: { type: Schema.Types.ObjectId, ref: 'Brand', default: null },
   },
