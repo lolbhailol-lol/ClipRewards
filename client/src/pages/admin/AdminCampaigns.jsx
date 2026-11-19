@@ -436,7 +436,7 @@ export function AdminCampaignEditor() {
             </Field>
           </Section>
 
-          <div className="glass-solid sticky bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-10 flex flex-col gap-2 rounded-3xl p-2 sm:flex-row md:bottom-4">
+          <div className="glass-solid sticky bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-10 bg-bg/95 flex flex-col gap-2 rounded-3xl p-2 sm:flex-row md:bottom-4">
             <Button type="submit" variant={isNew ? 'secondary' : 'primary'} block loading={save.isPending && save.variables === 'draft'}>
               {isNew ? 'Save as draft' : 'Save changes'}
             </Button>

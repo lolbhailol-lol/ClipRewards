@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import { Building2, ClipboardCheck, IndianRupee, LayoutDashboard, Megaphone } from 'lucide-react';
+import { Building2, ClipboardCheck, Film, IndianRupee, LayoutDashboard, Megaphone } from 'lucide-react';
 import { homeFor, rememberNext, useAuth } from './lib/auth';
 import { Button, Logo, Spinner } from './ui';
 import PublicLayout from './layouts/PublicLayout';
@@ -16,7 +16,7 @@ import CreatorOnboarding from './pages/onboarding/CreatorOnboarding';
 import BrandOnboarding from './pages/onboarding/BrandOnboarding';
 import { Campaigns, Earnings, Home, Profile } from './pages/creator/CreatorPages';
 import Insights from './pages/creator/Insights';
-import { BrandAccount, BrandApprovals, BrandCampaigns, BrandOverview } from './pages/brand/BrandPages';
+import { BrandAccount, BrandCampaigns, BrandClips, BrandOverview } from './pages/brand/BrandPages';
 import { AdminBrands, AdminLeads, AdminOverview } from './pages/admin/AdminPages';
 import { AdminCampaignEditor, AdminCampaigns } from './pages/admin/AdminCampaigns';
 import { AdminClips, AdminPayouts } from './pages/admin/AdminClips';
@@ -24,7 +24,8 @@ import { AdminClips, AdminPayouts } from './pages/admin/AdminClips';
 const BRAND_NAV = [
   { to: '/brand', label: 'Overview', icon: LayoutDashboard, end: true },
   { to: '/brand/campaigns', label: 'Campaigns', icon: Megaphone },
-  { to: '/brand/approvals', label: 'Approvals', icon: ClipboardCheck },
+  { to: '/brand/clips', label: 'Clips', icon: Film },
+  { to: '/brand/account', label: 'Account', icon: Building2 },
 ];
 
 const ADMIN_NAV = [
@@ -83,7 +84,8 @@ export default function App() {
       <Route path="/brand" element={<Gate role="brand"><AppShell nav={BRAND_NAV} accountTo="/brand/account" section="Brand" /></Gate>}>
         <Route index element={<BrandOverview />} />
         <Route path="campaigns" element={<BrandCampaigns />} />
-        <Route path="approvals" element={<BrandApprovals />} />
+        <Route path="clips" element={<BrandClips />} />
+        <Route path="approvals" element={<Navigate to="/brand/clips" replace />} />
         <Route path="account" element={<BrandAccount />} />
         <Route path="billing" element={<Navigate to="/brand/account" replace />} />
       </Route>

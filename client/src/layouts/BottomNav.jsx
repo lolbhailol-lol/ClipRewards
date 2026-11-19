@@ -1,5 +1,5 @@
 import { NavLink, matchPath, useLocation } from 'react-router-dom';
-import { BarChart3, Film, House, LayoutDashboard, LayoutGrid, UserRound, Wallet } from 'lucide-react';
+import { BarChart3, Film, House, LogIn, LayoutDashboard, LayoutGrid, UserRound, Wallet } from 'lucide-react';
 import { useAuth } from '../lib/auth';
 import { cx } from '../ui';
 
@@ -35,7 +35,7 @@ export function usePublicNav() {
     { to: '/', label: 'Home', icon: House, end: true },
     { to: '/campaigns', label: 'Campaigns', icon: LayoutGrid },
     { to: '/app/earnings', label: 'Earnings', icon: Wallet },
-    { to: '/app/profile', label: 'Profile', icon: UserRound },
+    { to: '/login', label: 'Sign in', icon: LogIn },
   ];
 }
 

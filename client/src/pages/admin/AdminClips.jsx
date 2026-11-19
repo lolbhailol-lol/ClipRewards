@@ -7,6 +7,7 @@ import { InstagramIcon, YoutubeIcon } from '../../ui/PlatformIcons';
 import { Button, Card, Chips, EmptyState, Input, Notice, PageHeader, Skeleton, Status, Textarea } from '../../ui';
 
 const SUB_TONE = { pending: 'warning', approved: 'success', rejected: 'danger', removed: 'neutral' };
+const SUB_LABEL = { pending: 'In review', approved: 'Approved', rejected: 'Rejected', removed: 'Removed' };
 const cap = (s) => s[0].toUpperCase() + s.slice(1);
 
 /* ---------------- Clip review ---------------- */
@@ -97,7 +98,7 @@ function ClipReviewCard({ s }) {
         </a>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <Status tone={SUB_TONE[s.status]}>{cap(s.status)}</Status>
+            <Status tone={SUB_TONE[s.status]}>{SUB_LABEL[s.status] ?? cap(s.status)}</Status>
             {s.flagged && (
               <span className="inline-flex items-center gap-1 text-xs text-warning">
                 <ShieldAlert className="size-3.5" aria-hidden /> Flagged

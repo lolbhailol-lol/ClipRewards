@@ -7,10 +7,10 @@ import CampaignCard from './CampaignCard';
 
 const FILTERS = [
   { value: 'all', label: 'All' },
-  { value: 'genz', label: 'Gen Z' },
+  { value: 'genz', label: 'Gen Z & college' },
   { value: 'podcast', label: 'Podcasts' },
   { value: 'music', label: 'Music' },
-  { value: 'regional', label: 'Regional' },
+  { value: 'regional', label: 'Regional language' },
 ];
 
 export function useCampaigns(vertical = 'all') {

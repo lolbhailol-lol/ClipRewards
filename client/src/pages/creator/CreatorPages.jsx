@@ -4,7 +4,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   ArrowDownToLine,
   BarChart3,
-  Bell,
   ChevronRight,
   CircleHelp,
   FileText,
@@ -28,7 +27,7 @@ import CampaignBrowser, { useCampaigns } from '../../components/CampaignBrowser'
 import SocialAccounts, { CheckPost, useSocialAccounts } from '../../components/SocialAccounts';
 import { useInsights } from './Insights';
 import { ClipList, HoldNote, useMySubmissions, useWallet } from '../../components/Clips';
-import { Avatar, Button, Card, EmptyState, Field, Input, ListGroup, ListRow, Notice, PageHeader, Segmented, Skeleton, Switch, cx, toneClass } from '../../ui';
+import { Avatar, Button, Card, EmptyState, Field, Input, ListGroup, ListRow, Notice, PageHeader, Segmented, Skeleton, cx, toneClass } from '../../ui';
 
 const MIN_WITHDRAW_PAISE = 20000; // ₹200
 
@@ -266,7 +265,7 @@ export function Earnings() {
       <PageHeader eyebrow="Creator" title="Earnings" />
 
       {/* Desktop: wallet + payout info on the left, activity on the right. Phones: one column. */}
-      <div className="grid gap-8 lg:grid-cols-2 lg:items-start xl:gap-10">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-start xl:gap-10">
       <div>
       <Card className="p-5 md:p-6">
         <p className="text-[13px] text-muted">Withdrawable</p>
@@ -413,11 +412,12 @@ export function Profile() {
   const { user, setMe, signOut } = useAuth();
   const [theme, setTheme] = useTheme();
   const [editing, setEditing] = useState(false);
-  const [notify, setNotify] = useState(false);
 
   return (
-    // Desktop: you + preferences on the left, connected accounts on the right. Phones: one column.
-    <div className="grid gap-8 lg:grid-cols-2 lg:items-start xl:gap-x-10">
+    <>
+    <PageHeader eyebrow="Creator" title="Profile" />
+    {/* Desktop: you + preferences on the left, connected accounts on the right. Phones: one column. */}
+    <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-start xl:gap-x-10">
       <Card className="flex flex-col items-center px-5 py-7 text-center">
         <Avatar name={user?.name} src={user?.avatarUrl} className="size-20 text-xl" />
         {editing ? (
@@ -453,16 +453,6 @@ export function Profile() {
           <span className="flex-1 text-sm font-medium">Theme</span>
           <Segmented label="Theme" value={theme} onChange={setTheme} options={THEME_OPTIONS} />
         </div>
-        <div className="flex items-center gap-3.5 px-4 py-3.5">
-          <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-glass-3">
-            <Bell className="size-[18px]" strokeWidth={1.75} aria-hidden />
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-sm font-medium">New campaign alerts</span>
-            <span className="block text-[13px] text-muted">Coming soon</span>
-          </span>
-          <Switch label="New campaign alerts" checked={notify} onChange={setNotify} disabled />
-        </div>
       </ListGroup>
 
       <ListGroup title="More">
@@ -474,6 +464,7 @@ export function Profile() {
         <ListRow icon={LogOut} title="Sign out" tone="danger" onClick={signOut} />
       </ListGroup>
     </div>
+    </>
   );
 }
 

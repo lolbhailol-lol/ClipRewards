@@ -54,6 +54,28 @@ describe('auth', () => {
   });
 });
 
+describe('rate limits', () => {
+  test('page loads (/auth/me, /auth/config) are never rate limited, even from one IP', async () => {
+    const limited = createApp({ rateLimits: true });
+    const { auth } = await signIn('busy@example.com');
+    for (let i = 0; i < 60; i++) {
+      await request(limited).get('/api/auth/config').expect(200);
+      await request(limited).get('/api/auth/me').set(auth).expect(200);
+    }
+  });
+
+  test('signed-in limits are per person, so a shared Wi-Fi does not lock everyone out', async () => {
+    const limited = createApp({ rateLimits: true });
+    const a = await signIn('a@example.com');
+    const b = await signIn('b@example.com');
+    await request(limited).post('/api/onboarding/role').set(a.auth).send({ role: 'creator' });
+    await request(limited).post('/api/onboarding/role').set(b.auth).send({ role: 'creator' });
+    for (let i = 0; i < 120; i++) await request(limited).get('/api/social/accounts').set(a.auth);
+    await request(limited).get('/api/social/accounts').set(a.auth).expect(429);
+    await request(limited).get('/api/social/accounts').set(b.auth).expect(200);
+  });
+});
+
 describe('google sign-in (firebase)', () => {
   const firebase = require('../src/lib/firebase');
   const claims = (over = {}) => ({

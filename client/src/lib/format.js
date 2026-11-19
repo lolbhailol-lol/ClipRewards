@@ -20,7 +20,7 @@ export const timeAgo = (date) => {
 };
 
 export const VERTICALS = [
-  { value: 'genz', label: 'Gen Z / College' },
+  { value: 'genz', label: 'Gen Z & college' },
   { value: 'podcast', label: 'Podcasts' },
   { value: 'music', label: 'Music' },
   { value: 'regional', label: 'Regional language' },

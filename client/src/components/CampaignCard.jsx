@@ -54,7 +54,7 @@ export default function CampaignCard({ campaign, to, example, className, style }
         <p className="truncate text-[13px] text-muted">{brand}</p>
         <p className="mt-0.5 truncate text-[15px] font-semibold">{title}</p>
         <div className="mt-3 flex flex-wrap gap-1.5">
-          {type && <Tag>{type === 'ugc' ? 'UGC' : 'Clipping'}</Tag>}
+          {type && <Tag>{type === 'ugc' ? 'Film your own' : 'Edit our footage'}</Tag>}
           {vertical && <Tag>{verticalLabel(vertical)}</Tag>}
         </div>
       </div>

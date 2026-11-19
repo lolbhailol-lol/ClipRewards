@@ -57,6 +57,7 @@ submissionSchema.methods.toPublic = function toPublic(campaign) {
     earnedPaise: this.earnedPaise,
     flagged: this.flagged,
     lastCheckedAt: this.lastCheckedAt,
+    checkError: this.checkError || '',
     createdAt: this.createdAt,
   };
 };

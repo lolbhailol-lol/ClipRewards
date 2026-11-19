@@ -413,7 +413,7 @@ export function Segmented({ options, value, onChange, label, className }) {
           aria-selected={value === o.value}
           onClick={() => onChange(o.value)}
           className={cx(
-            'h-9 flex-1 rounded-full px-4 text-[13px] font-medium transition-colors',
+            'h-9 flex-1 whitespace-nowrap rounded-full px-4 text-[13px] font-medium transition-colors',
             value === o.value ? 'bg-glass-3 text-text shadow-[inset_0_1px_0_var(--glass-hi)]' : 'text-muted hover:text-text'
           )}
         >

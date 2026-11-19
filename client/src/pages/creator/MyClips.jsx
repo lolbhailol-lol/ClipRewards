@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowDownToLine, CheckCircle2, ExternalLink, Eye, Film, Megaphone, ShieldAlert, Upload, XCircle } from 'lucide-react';
 import { compact, img, rupees, timeAgo } from '../../lib/format';
 import { InstagramIcon, YoutubeIcon } from '../../ui/PlatformIcons';
-import { useMySubmissions, useWallet } from '../../components/Clips';
+import { checkProblem, useMySubmissions, useWallet } from '../../components/Clips';
 import { Button, Card, Chips, EmptyState, Notice, PageHeader, Segmented, Skeleton, Stat, StatGrid, Status, Tag, cx } from '../../ui';
 
 const CLIP_STATUS = {
@@ -268,6 +268,7 @@ function ClipCard({ s, example }) {
         </div>
         <p className="mt-2 line-clamp-2 text-[15px] font-medium leading-snug">{s.title || 'Your clip'}</p>
         {s.status === 'rejected' && s.reviewNote && <p className="mt-1 text-sm text-danger">{s.reviewNote}</p>}
+        {checkProblem(s) && <p className="mt-2 rounded-2xl bg-warning-soft px-3 py-2 text-[13px] text-warning">{checkProblem(s)}</p>}
 
         {/* Campaign */}
         {s.campaign && (

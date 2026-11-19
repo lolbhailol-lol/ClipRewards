@@ -50,12 +50,15 @@ function createApp({ rateLimits = process.env.NODE_ENV !== 'test', serveClient =
   app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
   app.use('/api/auth/otp', limit({ windowMs: 10 * 60 * 1000, max: 10, key: (req) => `${req.ip}:${req.path}` }));
-  app.use('/api/auth', limit({ windowMs: 60 * 1000, max: 30 }), require('./routes/auth'));
+  // Only sign-in attempts are limited (per IP); page loads (GET /me, /config) never are.
+  app.use('/api/auth', limit({ windowMs: 60 * 1000, max: 40, skip: (req) => req.method === 'GET' }), require('./routes/auth'));
   app.use('/api/onboarding', require('./routes/onboarding'));
-  app.use('/api/leads', limit({ windowMs: 60 * 60 * 1000, max: 5 }), require('./routes/leads'));
+  app.use('/api/leads', limit({ windowMs: 60 * 60 * 1000, max: 10, skip: (req) => req.method === 'GET' }), require('./routes/leads'));
   app.use('/api/campaigns', require('./routes/campaigns'));
-  app.use('/api/submissions', limit({ windowMs: 60 * 1000, max: 30 }), require('./routes/submissions'));
-  app.use('/api/social', limit({ windowMs: 60 * 1000, max: 30 }), require('./routes/social'));
+  // Per signed-in person, so a shared college Wi-Fi doesn't share one limit.
+  app.use('/api/submissions', limit({ windowMs: 60 * 1000, max: 120, key: rateLimit.userOrIp }), require('./routes/submissions'));
+  app.use('/api/social', limit({ windowMs: 60 * 1000, max: 120, key: rateLimit.userOrIp }), require('./routes/social'));
+  app.use('/api/brand', limit({ windowMs: 60 * 1000, max: 120, key: rateLimit.userOrIp }), require('./routes/brand'));
   app.use('/api/admin', require('./routes/admin'));
   app.use('/api/chat', require('./routes/chat'));
 

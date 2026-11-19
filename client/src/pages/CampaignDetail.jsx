@@ -186,14 +186,15 @@ export default function CampaignDetail({ inApp }) {
           </div>
 
           <div className="mt-5 flex flex-wrap gap-1.5 px-1">
-            <Tag>{c.type === 'ugc' ? 'UGC' : 'Clipping'}</Tag>
+            <Tag>{c.type === 'ugc' ? 'Film your own' : 'Edit our footage'}</Tag>
             <Tag>{verticalLabel(c.vertical)}</Tag>
             {c.platforms.map((p) => (
               <Tag key={p}>{PLATFORM_NAME[p]}</Tag>
             ))}
           </div>
 
-          {inApp && user?.role === 'creator' && <CreatorClips campaign={c} />}
+          {/* Submitting opens once the creator has joined (participated). */}
+          {inApp && user?.role === 'creator' && joined && <CreatorClips campaign={c} />}
 
           {c.brief && (
             <section className="mt-8">
@@ -279,8 +280,8 @@ export default function CampaignDetail({ inApp }) {
             </p>
             <div className="mt-4 grid grid-cols-2 rounded-2xl bg-glass-2 shadow-[inset_0_1px_0_var(--glass-hi)]">
               <div className="border-r border-border p-3.5">
-                <p className="font-mono text-base font-medium tabular-nums">{rupees(c.ratePer1kPaise * 100)}</p>
-                <p className="label mt-0.5">at 100K views</p>
+                <p className="font-mono text-base font-medium tabular-nums">{rupees(c.perClipCapPaise > 0 ? Math.min(c.ratePer1kPaise * 10, c.perClipCapPaise) : c.ratePer1kPaise * 10)}</p>
+                <p className="label mt-0.5">at 10K views</p>
               </div>
               <div className="p-3.5">
                 <p className="font-mono text-base font-medium tabular-nums">{c.perClipCapPaise > 0 ? rupees(c.perClipCapPaise) : 'No cap'}</p>
@@ -292,7 +293,7 @@ export default function CampaignDetail({ inApp }) {
             </div>
             {joined && (
               <p className="mt-3 hidden text-center text-[13px] text-muted lg:block">
-                <Upload className="mr-1 inline size-3.5" aria-hidden /> Clip submission opens soon.
+                <Upload className="mr-1 inline size-3.5" aria-hidden /> Posted your clip? Paste the link under the campaign photo.
               </p>
             )}
           </Card>

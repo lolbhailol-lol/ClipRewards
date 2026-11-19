@@ -82,7 +82,7 @@ export default function SocialAccounts() {
                       {acc ? (acc.username ? `@${acc.username}` : acc.displayName) : p.name}
                       {acc?.status === 'expired' && <Status tone="warning">Reconnect</Status>}
                     </span>
-                    <span className="mt-0.5 block truncate text-[13px] text-muted">
+                    <span className="mt-0.5 block text-[13px] leading-snug text-muted">
                       {acc
                         ? `${p.name}${acc.followers != null ? ` · ${compact(acc.followers)} ${p.unit}` : ''} · connected ${timeAgo(acc.connectedAt)}`
                         : available

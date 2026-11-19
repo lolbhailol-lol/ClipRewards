@@ -100,6 +100,7 @@ export function ClipRow({ s, showCampaign }) {
           {s.lastCheckedAt && <span className="text-faint"> · {timeAgo(s.lastCheckedAt)}</span>}
         </p>
         {s.status === 'rejected' && s.reviewNote && <p className="mt-0.5 text-xs text-danger">{s.reviewNote}</p>}
+        {checkProblem(s) && <p className="mt-0.5 text-xs text-warning">{checkProblem(s)}</p>}
       </div>
       <a href={s.url} target="_blank" rel="noreferrer" aria-label="Open post" className="grid size-9 shrink-0 place-items-center rounded-full text-faint hover:bg-glass-2 hover:text-text">
         <ExternalLink className="size-4" />
@@ -125,4 +126,12 @@ export function HoldNote() {
       <Clock className="size-3.5" aria-hidden /> New earnings are held for 7 days while views are checked.
     </p>
   );
+}
+
+/** Plain-language reason we couldn't read a clip's views (shown to the creator who can fix it). */
+export function checkProblem(s) {
+  if (!s?.checkError || s.status === 'rejected' || s.status === 'removed') return '';
+  if (/no longer public/i.test(s.checkError)) return 'We can’t see this video any more. Make sure it’s still posted and public, or views stop counting.';
+  if (/connection expired/i.test(s.checkError)) return 'Your Instagram connection expired. Reconnect it in Profile so views keep counting.';
+  return 'We couldn’t read this post’s views on the last check. We’ll try again automatically.';
 }

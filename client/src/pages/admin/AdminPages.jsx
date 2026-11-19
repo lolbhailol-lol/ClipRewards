@@ -38,7 +38,7 @@ export function AdminOverview() {
         <StatGrid>
           <Stat label="Live" value={data.liveCampaigns ?? 0} hint="Campaigns" />
           <Stat label="To review" value={data.pendingBrands} hint="Brands" />
-          <Stat label="New leads" value={data.newLeads} hint="Demo requests" />
+          <Stat label="Pilot requests" value={data.newLeads} hint="New, from the website" />
           <Stat label="Creators" value={data.creators} hint="Onboarded" />
         </StatGrid>
       )}
@@ -48,7 +48,7 @@ export function AdminOverview() {
         <ListRow icon={Check} title="Clips to review" subtitle="Approve clips so they start earning" to="/admin/clips" />
         <ListRow icon={IndianRupee} title="Payouts" subtitle="Pay creators’ withdrawal requests" to="/admin/payouts" />
         <ListRow icon={Building2} title="Review brands" subtitle="Approve new brands before their campaigns go live" to="/admin/brands" />
-        <ListRow icon={Inbox} title="Demo requests" subtitle="Brands who asked for a pilot from the website" to="/admin/leads" />
+        <ListRow icon={Inbox} title="Pilot requests" subtitle="Brands who asked for a pilot from the website" to="/admin/leads" />
       </ListGroup>
 
       <ListGroup title="Preferences" className="mt-8">
@@ -236,7 +236,7 @@ export function AdminLeads() {
 
   return (
     <>
-      <PageHeader eyebrow="Admin" title="Leads" subtitle="Brands who asked for a pilot from the website." />
+      <PageHeader eyebrow="Admin" title="Pilot requests" subtitle="Brands who asked for a pilot from the website." />
       {error && <Notice tone="danger">{error.message}</Notice>}
       {isPending ? (
         <Skeleton className="h-40" />
