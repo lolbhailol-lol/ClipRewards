@@ -353,6 +353,26 @@ describe('Instagram connect fallbacks', () => {
     expect(b.headers.location).toContain('connected=instagram');
   });
 
+  test('a 17-digit Instagram id stays exact, and a refused profile still connects', async () => {
+    const c = await creator();
+    const start = await request(app).get('/api/social/instagram/start').set(c.auth);
+    const state = new URL(start.body.url).searchParams.get('state');
+    const refused = JSON.stringify({ error: { message: 'Object with ID does not exist', code: 100 } });
+    jest.spyOn(global, 'fetch').mockImplementation(async (url) => {
+      const u = String(url);
+      // Raw text: the id is a bare number bigger than JavaScript can hold exactly.
+      if (u.includes('api.instagram.com/oauth/access_token')) return new Response('{"access_token":"SHORT","user_id":17841400123456789,"permissions":"instagram_business_basic"}');
+      if (u.includes('/access_token?')) return new Response(JSON.stringify({ access_token: 'LONG', expires_in: 5184000 }));
+      return new Response(refused, { status: 400 });
+    });
+    const res = await request(app).get(`/api/social/instagram/callback?code=big1&state=${state}`).expect(302);
+    jest.restoreAllMocks();
+    expect(res.headers.location).toContain('connected=instagram');
+    const acc = await SocialAccount.findOne({ platform: 'instagram', externalId: '17841400123456789' });
+    expect(acc).not.toBeNull();
+    expect(acc.displayName).toBe('Instagram account');
+  });
+
   test('a failed connect tells the user which step failed', async () => {
     const c = await creator();
     const start = await request(app).get('/api/social/instagram/start').set(c.auth);

@@ -22,7 +22,9 @@ async function fetchJson(url, { method = 'GET', headers = {}, body, timeoutMs = 
   const text = await res.text();
   let data;
   try {
-    data = text ? JSON.parse(text) : {};
+    // Instagram/Meta ids can be longer than JavaScript numbers hold exactly (e.g. user_id from
+    // the token exchange), so whole numbers of 16+ digits are kept as strings.
+    data = text ? JSON.parse(text.replace(/([:[,]\s*)(-?\d{16,})(?=\s*[,}\]])/g, '$1"$2"')) : {};
   } catch {
     data = { raw: text };
   }

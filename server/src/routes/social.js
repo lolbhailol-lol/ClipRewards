@@ -60,6 +60,28 @@ router.get('/instagram/callback', async (req, res) => {
 
 const inflight = new Map(); // code → Promise<redirect query>
 
+/**
+ * The profile, trying the long-lived token, then the short-lived one. If Instagram still
+ * refuses, the account is saved with just its id (we already know it from the token
+ * exchange); the username fills in on the next Insights refresh.
+ */
+async function readProfile(longToken, short) {
+  try {
+    return await instagram.getProfile(longToken, short.userId);
+  } catch (err) {
+    if (longToken !== short.accessToken) {
+      try {
+        return await instagram.getProfile(short.accessToken, short.userId);
+      } catch {
+        /* fall through */
+      }
+    }
+    if (!short.userId) throw err;
+    console.warn(`[social] Instagram profile unavailable (${err.message}); saving with id only`);
+    return { id: short.userId, username: '', name: 'Instagram account', accountType: '', avatarUrl: '', followers: null, mediaCount: null };
+  }
+}
+
 /** Exchanges the code, saves the account. Returns the query string for the redirect back. */
 async function connectInstagram(userId, code) {
   let step = 'start';
@@ -78,7 +100,7 @@ async function connectInstagram(userId, code) {
     step = 'token';
     const long = await instagram.toLongLived(short.accessToken);
     step = 'profile';
-    const profile = await instagram.getProfile(long.accessToken, short.userId);
+    const profile = await readProfile(long.accessToken, short);
 
     // Instagram Login only works for professional accounts; if the type wasn't returned, let it through.
     if (profile.accountType && !['BUSINESS', 'MEDIA_CREATOR'].includes(String(profile.accountType).toUpperCase())) {
@@ -105,7 +127,7 @@ async function connectInstagram(userId, code) {
       },
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
-    await User.updateOne({ _id: user._id }, { $set: { 'creator.instagram': profile.username } });
+    if (profile.username) await User.updateOne({ _id: user._id }, { $set: { 'creator.instagram': profile.username } });
     return { connected: 'instagram' };
   } catch (err) {
     if (isDup(err)) return { social_error: 'instagram_taken' };
