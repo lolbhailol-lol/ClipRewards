@@ -11,7 +11,7 @@ export default function PublicLayout() {
     <div className="min-h-dvh pb-tabbar md:pb-0">
       <header className="sticky top-0 z-20 border-b border-border bg-bg/60 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 md:px-6">
-          <Link to="/" aria-label="ClipRewards home">
+          <Link to="/" aria-label="CreatorPerks home">
             <Logo />
           </Link>
           <nav className="hidden items-center gap-1 md:flex" aria-label="Site">
@@ -48,7 +48,7 @@ export default function PublicLayout() {
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-muted">
             <Link to="/privacy" className="hover:text-text">Privacy</Link>
             <Link to="/terms" className="hover:text-text">Terms</Link>
-            <span>© {new Date().getFullYear()} ClipRewards · Pune, India</span>
+            <span>© {new Date().getFullYear()} CreatorPerks · Pune, India</span>
           </div>
         </div>
       </footer>

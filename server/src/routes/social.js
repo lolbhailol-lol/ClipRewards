@@ -222,7 +222,7 @@ router.post('/youtube/connect', validate(z.object({ accessToken: z.string().min(
     await req.user.save();
     res.json({ account: acc.toPublic() });
   } catch (err) {
-    if (isDup(err)) return res.status(409).json({ error: 'This YouTube channel is already connected to another ClipRewards account' });
+    if (isDup(err)) return res.status(409).json({ error: 'This YouTube channel is already connected to another CreatorPerks account' });
     throw err;
   }
 });

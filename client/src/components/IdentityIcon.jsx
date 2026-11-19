@@ -1,5 +1,5 @@
 /**
- * Generated profile icon in the ClipRewards logo style: a rounded square with a
+ * Generated profile icon in the CreatorPerks logo style: a rounded square with a
  * mirrored 5×5 pattern unique to each person (same name → same icon).
  */
 function hash(str) {

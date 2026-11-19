@@ -135,7 +135,7 @@ export default function AppShell({ nav, accountTo, section }) {
       {/* Phone top bar: just the logo and the menu, straight on the background */}
       <header className="sticky top-0 z-30 bg-gradient-to-b from-bg via-bg/80 to-transparent px-4 pb-3 pt-3 md:hidden">
         <div className="flex h-12 items-center justify-between">
-          <Link to={nav[0].to} aria-label="ClipRewards home" className="transition-transform active:scale-95">
+          <Link to={nav[0].to} aria-label="CreatorPerks home" className="transition-transform active:scale-95">
             <Logo className="text-base" />
           </Link>
           <button

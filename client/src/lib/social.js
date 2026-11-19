@@ -14,7 +14,7 @@ export const SOCIAL_ERRORS = {
   instagram_cancelled: 'You cancelled the Instagram connection.',
   instagram_expired: 'That took too long. Please try connecting Instagram again.',
   instagram_not_professional: 'Switch your Instagram to a Creator or Business account (free, in Instagram → Settings → Account type), then connect again.',
-  instagram_taken: 'That Instagram account is already connected to another ClipRewards account.',
+  instagram_taken: 'That Instagram account is already connected to another CreatorPerks account.',
   instagram_failed: 'Couldn’t connect Instagram. Please try again.',
 };
 

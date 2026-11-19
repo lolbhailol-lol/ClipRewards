@@ -305,7 +305,7 @@ export function PageHeader({ title, subtitle, actions, eyebrow }) {
   );
 }
 
-/** ClipRewards mark: a "C" ring (clip) wrapped around a play button, in a rounded square. */
+/** CreatorPerks mark: a "C" ring (clip) wrapped around a play button, in a rounded square. */
 export function LogoMark({ className = 'size-7' }) {
   return (
     <svg viewBox="0 0 32 32" className={className} aria-hidden>
@@ -320,7 +320,7 @@ export function Logo({ className }) {
   return (
     <span className={cx('inline-flex items-center gap-2 text-[15px] font-semibold tracking-tight', className)}>
       <LogoMark />
-      <span>ClipRewards</span>
+      <span>CreatorPerks</span>
     </span>
   );
 }
@@ -453,7 +453,7 @@ export function Chips({ options, value, onChange, label }) {
 
 /**
  * Profile picture: the Google photo when there is one, otherwise a generated
- * ClipRewards-style pattern icon unique to the person.
+ * CreatorPerks-style pattern icon unique to the person.
  */
 export function Avatar({ name = '', src, className }) {
   if (src) {

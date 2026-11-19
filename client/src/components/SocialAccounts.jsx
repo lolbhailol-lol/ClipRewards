@@ -151,7 +151,7 @@ function InstagramAccess({ status, username = '', onDone }) {
             </a>{' '}
             in your browser, logged in as @{username}.
           </li>
-          <li>Go to the <strong className="text-text">Tester invites</strong> tab and tap <strong className="text-text">Accept</strong> for ClipRewards.</li>
+          <li>Go to the <strong className="text-text">Tester invites</strong> tab and tap <strong className="text-text">Accept</strong> for CreatorPerks.</li>
           <li>Come back here and tap <strong className="text-text">Connect</strong>.</li>
         </ol>
       </Notice>

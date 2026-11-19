@@ -9,7 +9,7 @@ const { requireAuth, requireRole } = require('../middleware/auth');
 
 /**
  * What a signed-in brand sees: its campaigns with results, and the clips posted for them.
- * Read-only: campaigns are set up and clips are reviewed by the ClipRewards team.
+ * Read-only: campaigns are set up and clips are reviewed by the CreatorPerks team.
  */
 const router = Router();
 router.use(requireAuth, requireRole('brand'));

@@ -12,7 +12,7 @@ const originOf = (url) => {
 };
 
 // Public web address of the app. In production the API also serves the web app,
-// so this is the one domain users visit (e.g. https://cliprewards.in).
+// so this is the one domain users visit (e.g. https://creatorperks.in).
 const clientOrigin = (process.env.CLIENT_ORIGIN || process.env.PUBLIC_URL || 'http://localhost:5173').replace(/\/$/, '');
 
 // Instagram sends people back here after "Allow". In production it must be on our own site:

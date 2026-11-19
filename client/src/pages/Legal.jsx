@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
 const UPDATED = '18 November 2026';
-const NAME = import.meta.env.VITE_LEGAL_NAME || 'ClipRewards';
+const NAME = import.meta.env.VITE_LEGAL_NAME || 'CreatorPerks';
 const EMAIL = import.meta.env.VITE_SUPPORT_EMAIL || '';
 
 function Contact() {

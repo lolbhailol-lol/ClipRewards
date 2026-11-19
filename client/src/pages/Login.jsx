@@ -72,12 +72,12 @@ export default function Login() {
 
   return (
     <div className="pb-tabbar flex min-h-dvh flex-col items-center justify-center px-4 py-10 md:pb-10">
-      <Link to="/" className="mb-10" aria-label="ClipRewards home">
+      <Link to="/" className="mb-10" aria-label="CreatorPerks home">
         <Logo />
       </Link>
 
       <Card className="w-full max-w-sm p-6 md:p-7">
-        <h1 className="text-[22px] font-semibold leading-tight">{isBrand ? 'Launch your first campaign' : 'Welcome to ClipRewards'}</h1>
+        <h1 className="text-[22px] font-semibold leading-tight">{isBrand ? 'Launch your first campaign' : 'Welcome to CreatorPerks'}</h1>
         <p className="mt-2 text-sm text-muted">Continue with your Google account. New here? Your account is created automatically.</p>
 
         <Button

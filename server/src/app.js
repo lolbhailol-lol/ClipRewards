@@ -23,6 +23,23 @@ function securityHeaders(req, res, next) {
   next();
 }
 
+/**
+ * Pages opened on the old host (e.g. cliprewards.onrender.com) move to the main domain
+ * (CLIENT_ORIGIN), so old links keep working and sign-in stays on one site.
+ * API calls are left alone (Render's health check uses the onrender host).
+ */
+function redirectToMainDomain(req, res, next) {
+  if (!config.isProd || !/\.onrender\.com$/i.test(req.hostname) || req.path.startsWith('/api/')) return next();
+  let main;
+  try {
+    main = new URL(config.clientOrigin);
+  } catch {
+    return next();
+  }
+  if (main.hostname === req.hostname || !['GET', 'HEAD'].includes(req.method)) return next();
+  return res.redirect(301, `${main.origin}${req.originalUrl}`);
+}
+
 // Jest sets NODE_ENV=test; tests sign in many times, so limits are off there.
 function createApp({ rateLimits = process.env.NODE_ENV !== 'test', serveClient = config.isProd } = {}) {
   const app = express();
@@ -30,6 +47,7 @@ function createApp({ rateLimits = process.env.NODE_ENV !== 'test', serveClient =
   app.set('trust proxy', 1);
   app.disable('x-powered-by');
   app.use(securityHeaders);
+  app.use(redirectToMainDomain);
   app.use(
     cors({
       // Same-origin requests send no Origin header; cross-origin only from known sites.

@@ -36,7 +36,7 @@ export default function ChooseRole() {
     <div className="mx-auto flex min-h-dvh max-w-lg flex-col px-4 pb-6 pt-8">
       <Logo />
       <div className="mt-12">
-        <h1 className="text-[28px] font-semibold leading-tight">How will you use ClipRewards?</h1>
+        <h1 className="text-[28px] font-semibold leading-tight">How will you use CreatorPerks?</h1>
         <p className="mt-2 text-muted">Pick one. This can’t be changed later.</p>
       </div>
 

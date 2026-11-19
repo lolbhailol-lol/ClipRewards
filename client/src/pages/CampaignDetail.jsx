@@ -306,7 +306,7 @@ export default function CampaignDetail({ inApp }) {
           </ListGroup>
 
           <ListGroup title="About the brand" className="mt-8">
-            <ListRow icon={BadgeCheck} title={c.brand?.name} subtitle={`${verticalLabel(c.vertical)} · Verified by ClipRewards`} />
+            <ListRow icon={BadgeCheck} title={c.brand?.name} subtitle={`${verticalLabel(c.vertical)} · Verified by CreatorPerks`} />
             <ListRow icon={Link2} title="Share this campaign" onClick={share} />
           </ListGroup>
 

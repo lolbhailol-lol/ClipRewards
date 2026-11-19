@@ -1,4 +1,4 @@
-# ClipRewards
+# CreatorPerks
 
 Pay-per-view clipping for India. Brands launch campaigns; creators connect Instagram/YouTube, post clips, and get paid for verified views.
 
@@ -45,7 +45,7 @@ Any Node host works (Render, Railway, Fly, a VPS). Example: **Render → New Web
 | Variable | Value |
 |---|---|
 | `NODE_ENV` | `production` |
-| `CLIENT_ORIGIN` | Your https domain, e.g. `https://cliprewards.in` |
+| `CLIENT_ORIGIN` | Your https domain, e.g. `https://creatorperks.in` |
 | `MONGODB_URI` | MongoDB Atlas connection string |
 | `JWT_SECRET` | 32+ random characters |
 | `TOKEN_ENCRYPTION_KEY` | `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"` |
@@ -61,16 +61,16 @@ The server refuses to start in production if `CLIENT_ORIGIN`, `MONGODB_URI`, `JW
 
 ### Point the providers at your domain
 
-Replace `cliprewards.in` with your domain.
+Replace `creatorperks.in` with your domain.
 
 **Meta (Instagram)**
-1. Instagram → API setup with Instagram login → Business login settings → **OAuth redirect URIs**: `https://cliprewards.in/api/social/instagram/callback`
-2. (Optional) Webhooks: callback `https://cliprewards.in/api/social/instagram/webhook`, verify token = `INSTAGRAM_WEBHOOK_VERIFY_TOKEN`.
+1. Instagram → API setup with Instagram login → Business login settings → **OAuth redirect URIs**: `https://creatorperks.in/api/social/instagram/callback`
+2. (Optional) Webhooks: callback `https://creatorperks.in/api/social/instagram/webhook`, verify token = `INSTAGRAM_WEBHOOK_VERIFY_TOKEN`.
 3. Until App Review is approved, only Instagram accounts added as **testers** can connect. Submit App Review for `instagram_business_basic` and `instagram_business_manage_insights` (needs Business Verification, a privacy policy URL and a screen recording of the connect + insights flow).
 
 **Firebase (Google sign-in)**
-- Authentication → Settings → **Authorized domains**: add `cliprewards.in`.
-- Google Cloud → APIs & Services → Credentials → the **Web client (auto created by Google Service)** → **Authorized redirect URIs**: add `https://cliprewards.in/__/auth/handler`. Then set `VITE_AUTH_ON_OWN_DOMAIN=true` and redeploy: the app will run Google sign-in through your own domain (the server serves Firebase’s sign-in pages at /__/auth), which works better in Safari and when popups are blocked. Until then it uses Firebase’s own domain, which works without this step.
+- Authentication → Settings → **Authorized domains**: add `creatorperks.in`.
+- Google Cloud → APIs & Services → Credentials → the **Web client (auto created by Google Service)** → **Authorized redirect URIs**: add `https://creatorperks.in/__/auth/handler`. Then set `VITE_AUTH_ON_OWN_DOMAIN=true` and redeploy: the app will run Google sign-in through your own domain (the server serves Firebase’s sign-in pages at /__/auth), which works better in Safari and when popups are blocked. Until then it uses Firebase’s own domain, which works without this step.
 
 **Google Cloud (YouTube)**
 - Enable **YouTube Data API v3**; OAuth consent screen: add scope `youtube.readonly` and your domain. Until Google verifies the app, users see an “unverified app” warning (max 100 users).

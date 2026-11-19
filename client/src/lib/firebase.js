@@ -135,7 +135,7 @@ export async function connectYouTube() {
       case 'auth/popup-closed-by-user':
       case 'auth/cancelled-popup-request':
         throw new YouTubeConnectError(
-          'The Google window closed before finishing. If you saw “Google hasn’t verified this app”, tap Advanced → Go to ClipRewards, then tick “View your YouTube account”.',
+          'The Google window closed before finishing. If you saw “Google hasn’t verified this app”, tap Advanced → Go to CreatorPerks, then tick “View your YouTube account”.',
           { canRedirect: true }
         );
       case 'auth/user-cancelled':
