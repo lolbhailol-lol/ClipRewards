@@ -25,6 +25,8 @@ export default function Login() {
   const navigate = useNavigate();
   const nav = usePublicNav();
   const [devOpen, setDevOpen] = useState(false);
+  // App reviewers (Meta, Google) open /login?review=1 to see the email + password form.
+  const [reviewOpen, setReviewOpen] = useState(params.get('review') === '1');
   const role = params.get('role');
 
   // Remember which button brought them here, so "Choose account type" is preselected.
@@ -104,6 +106,18 @@ export default function Login() {
           We only use your name, email and photo. We never post anything for you.
         </p>
 
+        {authConfig.data?.reviewLogin && (
+          <div className="mt-6 border-t border-border pt-4">
+            {reviewOpen ? (
+              <ReviewLogin onDone={finish} onClose={() => setReviewOpen(false)} />
+            ) : (
+              <button onClick={() => setReviewOpen(true)} className="w-full text-center text-xs text-faint hover:text-muted">
+                App reviewer? Sign in with email and password
+              </button>
+            )}
+          </div>
+        )}
+
         {authConfig.data?.devEmail && (
           <div className="mt-6 border-t border-border pt-4">
             {devOpen ? (
@@ -123,6 +137,39 @@ export default function Login() {
       </p>
       <BottomNav items={nav} />
     </div>
+  );
+}
+
+/** For Meta/Google app reviewers: the test account's email and password. */
+function ReviewLogin({ onDone, onClose }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const login = useMutation({
+    mutationFn: () => api('/auth/review', { method: 'POST', body: { email, password } }),
+    onSuccess: onDone,
+  });
+  return (
+    <form
+      className="space-y-3"
+      onSubmit={(e) => {
+        e.preventDefault();
+        login.mutate();
+      }}
+    >
+      <button type="button" onClick={onClose} className="inline-flex items-center gap-1 text-xs text-muted hover:text-text">
+        <ArrowLeft className="size-3.5" aria-hidden /> Back
+      </button>
+      <Field label="Email">
+        {(p) => <Input {...p} type="email" required autoComplete="username" autoCapitalize="none" value={email} onChange={(e) => setEmail(e.target.value)} />}
+      </Field>
+      <Field label="Password">
+        {(p) => <Input {...p} type="password" required autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} />}
+      </Field>
+      {login.error && <Alert tone="danger">{login.error.message}</Alert>}
+      <Button type="submit" size="sm" block loading={login.isPending}>
+        Sign in
+      </Button>
+    </form>
   );
 }
 

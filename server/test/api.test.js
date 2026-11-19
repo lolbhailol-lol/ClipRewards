@@ -277,3 +277,18 @@ describe('leads', () => {
     expect(res.body.leads[0].status).toBe('new');
   });
 });
+
+describe('reviewer login', () => {
+  const config = require('../src/config');
+  afterEach(() => Object.assign(config.reviewLogin, { email: '', password: '' }));
+
+  test('off unless configured; signs in the reviewer creator with the right password only', async () => {
+    await request(app).post('/api/auth/review').send({ email: 'review@creatorperks.in', password: 'x' }).expect(404);
+    Object.assign(config.reviewLogin, { email: 'review@creatorperks.in', password: 'correct-horse-battery' });
+    expect((await request(app).get('/api/auth/config')).body.reviewLogin).toBe(true);
+    await request(app).post('/api/auth/review').send({ email: 'review@creatorperks.in', password: 'wrong-password' }).expect(401);
+    await request(app).post('/api/auth/review').send({ email: 'other@x.in', password: 'correct-horse-battery' }).expect(401);
+    const ok = await request(app).post('/api/auth/review').send({ email: 'REVIEW@creatorperks.in', password: 'correct-horse-battery' }).expect(200);
+    expect(ok.body.user).toMatchObject({ email: 'review@creatorperks.in', role: 'creator', onboarded: true });
+  });
+});

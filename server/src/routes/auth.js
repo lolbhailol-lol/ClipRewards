@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const { Router } = require('express');
 const { z } = require('zod');
 const config = require('../config');
@@ -22,11 +23,20 @@ async function finishSignIn(user, res) {
   res.json({ token: signToken(user), user: user.toPublic(), brand });
 }
 
+const reviewLoginOn = () => {
+  const { email: e, password } = config.reviewLogin;
+  return Boolean(e && password.length >= 12 && !config.adminEmails.includes(e));
+};
+const sha = (v) => crypto.createHash('sha256').update(String(v)).digest();
+// After 20 wrong tries in 15 minutes (from anywhere), reviewer sign-in pauses until the window ends.
+const reviewFails = { count: 0, since: 0 };
+
 /** Tells the client which sign-in methods are on. */
 router.get('/config', (req, res) => {
   res.json({
     google: Boolean(config.firebaseProjectId),
     devEmail: config.exposeDevOtp,
+    reviewLogin: reviewLoginOn(),
     instagram: Boolean(config.instagram.appId && config.instagram.appSecret),
     youtube: Boolean(config.youtubeApiKey),
   });
@@ -58,6 +68,25 @@ router.post('/firebase', validate(z.object({ idToken: z.string().min(20) })), as
   user.firebaseUid = claims.uid;
   if (!user.name && claims.name) user.name = claims.name;
   if (claims.picture) user.avatarUrl = claims.picture;
+  await finishSignIn(user, res);
+});
+
+/**
+ * Reviewer sign-in (email + password from REVIEW_LOGIN_EMAIL / REVIEW_LOGIN_PASSWORD).
+ * Signs in one fixed creator account so Meta/Google reviewers can test the app.
+ */
+router.post('/review', validate(z.object({ email, password: z.string().min(1).max(200) })), async (req, res) => {
+  if (!reviewLoginOn()) return res.status(404).json({ error: 'Not found' });
+  if (Date.now() - reviewFails.since > 15 * 60 * 1000) Object.assign(reviewFails, { count: 0, since: Date.now() });
+  if (reviewFails.count >= 20) return res.status(429).json({ error: 'Too many attempts. Try again in 15 minutes.' });
+  const okEmail = crypto.timingSafeEqual(sha(req.body.email), sha(config.reviewLogin.email));
+  const okPass = crypto.timingSafeEqual(sha(req.body.password), sha(config.reviewLogin.password));
+  if (!okEmail || !okPass) {
+    reviewFails.count += 1;
+    return res.status(401).json({ error: 'Wrong email or password' });
+  }
+  let user = await User.findOne({ email: config.reviewLogin.email });
+  if (!user) user = new User({ email: config.reviewLogin.email, name: 'App Reviewer', role: 'creator', onboarded: true });
   await finishSignIn(user, res);
 });
 

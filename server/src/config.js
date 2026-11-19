@@ -60,6 +60,12 @@ const config = {
   allowedOrigins,
   // Dev-only email-code sign-in for the seeded demo accounts. Never on in production.
   exposeDevOtp: !isProd,
+  // Email + password sign-in for app reviewers (Meta, Google), who can't use our Google sign-in.
+  // On only when both are set and the password is at least 12 characters. Never an admin.
+  reviewLogin: {
+    email: (process.env.REVIEW_LOGIN_EMAIL || '').trim().toLowerCase(),
+    password: process.env.REVIEW_LOGIN_PASSWORD || '',
+  },
   anthropicApiKey: process.env.ANTHROPIC_API_KEY,
   // 32 random bytes, base64. Encrypts stored Instagram tokens. Required in production.
   tokenEncryptionKey: process.env.TOKEN_ENCRYPTION_KEY || '',
