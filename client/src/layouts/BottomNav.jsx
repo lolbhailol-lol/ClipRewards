@@ -64,7 +64,7 @@ export default function BottomNav({ items, label = 'Main', className }) {
               className={({ isActive }) =>
                 cx(
                   'flex h-[3.4rem] flex-col items-center justify-center gap-1 rounded-[1.6rem] text-[11px] font-medium transition-colors active:scale-95',
-                  isActive ? 'text-primary' : 'text-faint hover:text-muted'
+                  isActive ? 'text-primary-text' : 'text-faint hover:text-muted'
                 )
               }
             >

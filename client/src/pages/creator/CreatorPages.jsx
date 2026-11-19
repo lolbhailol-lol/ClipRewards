@@ -136,7 +136,7 @@ function LiveFeed() {
           New paid campaigns show up here as soon as brands launch them.
         </EmptyState>
       ) : (
-        <div className="stagger no-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-1 md:mx-0 md:grid md:grid-cols-2 md:gap-4 md:overflow-visible md:px-0 lg:grid-cols-3">
+        <div className="stagger no-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-1 md:mx-0 md:grid md:grid-cols-2 md:gap-4 md:overflow-visible md:px-0 lg:grid-cols-3 2xl:grid-cols-4">
           {campaigns.slice(0, 6).map((c) => (
             <CampaignCard key={c.id} campaign={c} to={`/app/campaigns/${c.id}`} className="w-[78%] shrink-0 snap-start sm:w-[46%] md:w-auto" />
           ))}
@@ -230,7 +230,7 @@ export function Campaigns() {
           Open a campaign and tap Participate. Then post your clip and submit the link.
         </EmptyState>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
           {joined.map((c) => (
             <CampaignCard key={c.id} campaign={c} to={`/app/campaigns/${c.id}`} />
           ))}
@@ -265,6 +265,9 @@ export function Earnings() {
     <>
       <PageHeader eyebrow="Creator" title="Earnings" />
 
+      {/* Desktop: wallet + payout info on the left, activity on the right. Phones: one column. */}
+      <div className="grid gap-8 lg:grid-cols-2 lg:items-start xl:gap-10">
+      <div>
       <Card className="p-5 md:p-6">
         <p className="text-[13px] text-muted">Withdrawable</p>
         {wallet.isPending ? (
@@ -311,7 +314,14 @@ export function Earnings() {
         )}
       </ListGroup>
 
-      <section className="mt-8">
+      <ListGroup title="How payouts work" className="mt-8">
+        <ListRow icon={Upload} title="Clip approved" subtitle="We check your clip against the brief" />
+        <ListRow icon={ShieldCheck} title="7-day view check" subtitle="Views are checked for bots before they count" />
+        <ListRow icon={ArrowDownToLine} title="Withdraw to UPI" subtitle={`From ${rupees(min)}, usually within 1–2 working days`} />
+      </ListGroup>
+      </div>
+
+      <section>
         <Segmented
           label="Earnings view"
           value={view}
@@ -362,12 +372,7 @@ export function Earnings() {
           <HoldNote />
         </div>
       </section>
-
-      <ListGroup title="How payouts work" className="mt-8">
-        <ListRow icon={Upload} title="Clip approved" subtitle="We check your clip against the brief" />
-        <ListRow icon={ShieldCheck} title="7-day view check" subtitle="Views are checked for bots before they count" />
-        <ListRow icon={ArrowDownToLine} title="Withdraw to UPI" subtitle={`From ${rupees(min)}, usually within 1–2 working days`} />
-      </ListGroup>
+      </div>
     </>
   );
 }
@@ -411,7 +416,8 @@ export function Profile() {
   const [notify, setNotify] = useState(false);
 
   return (
-    <div className="space-y-8">
+    // Desktop: you + preferences on the left, connected accounts on the right. Phones: one column.
+    <div className="grid gap-8 lg:grid-cols-2 lg:items-start xl:gap-x-10">
       <Card className="flex flex-col items-center px-5 py-7 text-center">
         <Avatar name={user?.name} src={user?.avatarUrl} className="size-20 text-xl" />
         {editing ? (
@@ -433,8 +439,11 @@ export function Profile() {
         )}
       </Card>
 
-      <SocialAccounts />
-      <CheckPost />
+      {/* Rendered once; on desktop it moves to the right column, spanning the left column’s rows. */}
+      <div className="space-y-8 lg:col-start-2 lg:row-span-3 lg:row-start-1">
+        <SocialAccounts />
+        <CheckPost />
+      </div>
 
       <ListGroup title="Preferences">
         <div className="flex items-center gap-3.5 px-4 py-3">

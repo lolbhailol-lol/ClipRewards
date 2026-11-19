@@ -37,7 +37,7 @@ export default function CampaignBrowser({ basePath, limit }) {
       {error ? (
         <Notice tone="danger">{error.message}</Notice>
       ) : isPending ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
           {[0, 1, 2].map((i) => (
             <Skeleton key={i} className="aspect-[4/4]" />
           ))}
@@ -47,7 +47,7 @@ export default function CampaignBrowser({ basePath, limit }) {
           New paid campaigns show up here as soon as brands launch them.
         </EmptyState>
       ) : (
-        <div className="stagger grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="stagger grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
           {campaigns.map((c) => (
             <CampaignCard key={c.id} campaign={c} to={`${basePath}/${c.id}`} />
           ))}

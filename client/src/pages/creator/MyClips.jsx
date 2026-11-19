@@ -165,8 +165,8 @@ export default function MyClips() {
               <div className="mt-4">
                 <Chips label="Filter clips" value={filter} onChange={setFilter} options={FILTERS.map((f) => ({ ...f, label: `${f.label}${counts[f.value] ? ` · ${counts[f.value]}` : ''}` }))} />
               </div>
-              <div className="mt-4 space-y-4">
-                {shown.length === 0 && <p className="py-10 text-center text-sm text-muted">No clips with this status.</p>}
+              <div className="mt-4 grid gap-4 xl:grid-cols-2">
+                {shown.length === 0 && <p className="py-10 text-center text-sm text-muted xl:col-span-2">No clips with this status.</p>}
                 {shown.map((s) => (
                   <ClipCard key={s.id} s={s} example={example} />
                 ))}
@@ -187,7 +187,7 @@ const KIND = {
   submitted: { icon: Upload, tone: 'text-muted' },
   approved: { icon: CheckCircle2, tone: 'text-success' },
   rejected: { icon: XCircle, tone: 'text-danger' },
-  views: { icon: Eye, tone: 'text-primary' },
+  views: { icon: Eye, tone: 'text-primary-text' },
   reversal: { icon: ShieldAlert, tone: 'text-warning' },
   payout: { icon: ArrowDownToLine, tone: 'text-c-money' },
 };

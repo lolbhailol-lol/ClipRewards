@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /*
- * Black + grape design tokens (grape #B026FF for actions, magenta #FF2E93 for "Live").
+ * Black + deep purple design tokens (plum #5B2D91 for actions, rose #E0457B for "Live").
  * Dark is the default. Light is available, and "auto" follows the system.
  * Colour is used only for status (green / amber / red).
  */
@@ -14,7 +14,7 @@
   --c-reach: #22d3ee;
   --c-engage: #f472b6;
   --bg: #000000;
-  --spot: rgba(176, 38, 255, 0.16);
+  --spot: rgba(91, 45, 145, 0.22);
   --glass: rgba(255, 255, 255, 0.05);
   --glass-2: rgba(255, 255, 255, 0.08);
   --glass-3: rgba(255, 255, 255, 0.11);
@@ -26,19 +26,20 @@
   --text: #ffffff;
   --muted: #8a8a8a;
   --faint: #5c5c5c;
-  --primary: #b026ff;
-  --primary-hover: #be4dff;
-  --primary-fg: #000000;
+  --primary: #5b2d91;
+  --primary-text: #b39ddb;
+  --primary-hover: #6a37a8;
+  --primary-fg: #ffffff;
   --success: #4ade80;
   --success-soft: rgba(74, 222, 128, 0.1);
   --warning: #fbbf24;
   --warning-soft: rgba(251, 191, 36, 0.1);
   --danger: #f87171;
   --danger-soft: rgba(248, 113, 113, 0.1);
-  --ring: #b026ff;
-  --accent: #ff2e93;
-  --accent-soft: rgba(255, 46, 147, 0.12);
-  --glow: rgba(176, 38, 255, 0.33);
+  --ring: #9a7fd1;
+  --accent: #e0457b;
+  --accent-soft: rgba(224, 69, 123, 0.12);
+  --glow: rgba(91, 45, 145, 0.28);
   --shadow: 0 1px 0 var(--glass-hi) inset, 0 12px 32px -12px rgba(0, 0, 0, 0.6);
   color-scheme: dark;
 }
@@ -63,8 +64,9 @@
   --text: #0a0a0b;
   --muted: #5d5d66;
   --faint: #9a9aa3;
-  --primary: #8a0fd6;
-  --primary-hover: #7a0bc0;
+  --primary: #4b2278;
+    --primary-text: #4b2278;
+  --primary-hover: #3d1b63;
   --primary-fg: #ffffff;
   --success: #15803d;
   --success-soft: rgba(21, 128, 61, 0.09);
@@ -72,10 +74,10 @@
   --warning-soft: rgba(161, 98, 7, 0.09);
   --danger: #b91c1c;
   --danger-soft: rgba(185, 28, 28, 0.08);
-  --ring: #8a0fd6;
-    --accent: #e0127a;
-    --accent-soft: rgba(224, 18, 122, 0.09);
-    --glow: rgba(138, 15, 214, 0.22);
+  --ring: #4b2278;
+    --accent: #b8325f;
+    --accent-soft: rgba(184, 50, 95, 0.09);
+    --glow: rgba(75, 34, 120, 0.15);
   --shadow: 0 1px 0 var(--glass-hi) inset, 0 1px 2px rgba(15, 20, 40, 0.05), 0 12px 28px -16px rgba(15, 20, 40, 0.16);
   color-scheme: light;
 }
@@ -101,8 +103,9 @@
     --text: #0a0a0b;
     --muted: #5d5d66;
     --faint: #9a9aa3;
-    --primary: #8a0fd6;
-    --primary-hover: #7a0bc0;
+    --primary: #4b2278;
+    --primary-text: #4b2278;
+    --primary-hover: #3d1b63;
     --primary-fg: #ffffff;
     --success: #15803d;
     --success-soft: rgba(21, 128, 61, 0.09);
@@ -110,10 +113,10 @@
     --warning-soft: rgba(161, 98, 7, 0.09);
     --danger: #b91c1c;
     --danger-soft: rgba(185, 28, 28, 0.08);
-    --ring: #8a0fd6;
-    --accent: #e0127a;
-    --accent-soft: rgba(224, 18, 122, 0.09);
-    --glow: rgba(138, 15, 214, 0.22);
+    --ring: #4b2278;
+    --accent: #b8325f;
+    --accent-soft: rgba(184, 50, 95, 0.09);
+    --glow: rgba(75, 34, 120, 0.15);
     --shadow: 0 1px 0 var(--glass-hi) inset, 0 1px 2px rgba(15, 20, 40, 0.05), 0 12px 28px -16px rgba(15, 20, 40, 0.16);
     color-scheme: light;
   }
@@ -140,6 +143,7 @@
   --color-danger: var(--danger);
   --color-danger-soft: var(--danger-soft);
   --color-ring: var(--ring);
+  --color-primary-text: var(--primary-text);
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
   --color-c-money: var(--c-money);
@@ -261,9 +265,9 @@
   animation: ring-spin var(--dur, 14s) linear infinite;
   animation-direction: var(--dir, normal);
 }
-:root { --sweep: rgba(190, 77, 255, 0.75); }
-:root[data-theme='light'] { --sweep: rgba(138, 15, 214, 0.45); }
-@media (prefers-color-scheme: light) { :root[data-theme='auto'] { --sweep: rgba(138, 15, 214, 0.45); } }
+:root { --sweep: rgba(179, 157, 219, 0.6); }
+:root[data-theme='light'] { --sweep: rgba(75, 34, 120, 0.4); }
+@media (prefers-color-scheme: light) { :root[data-theme='auto'] { --sweep: rgba(75, 34, 120, 0.4); } }
 
 /* Soft breathing glow at the top of the hero. */
 .hero-glow {
@@ -306,34 +310,34 @@
 
 /* Theme-aware colours for the effects. */
 :root {
-  --blob-1: rgba(176, 38, 255, 0.11);
-  --blob-2: rgba(255, 46, 147, 0.045);
-  --blob-3: rgba(176, 38, 255, 0.04);
-  --beam: rgba(205, 160, 255, 0.07);
+  --blob-1: rgba(91, 45, 145, 0.16);
+  --blob-2: rgba(91, 45, 145, 0.07);
+  --blob-3: rgba(60, 30, 100, 0.08);
+  --beam: rgba(179, 157, 219, 0.06);
   --grid-line: rgba(255, 255, 255, 0.045);
-  --card-spot: rgba(176, 38, 255, 0.07);
-  --card-edge: rgba(176, 38, 255, 0.5);
+  --card-spot: rgba(91, 45, 145, 0.08);
+  --card-edge: rgba(154, 127, 209, 0.4);
   --grain-opacity: 0.06;
 }
 :root[data-theme='light'] {
   --beam: rgba(120, 125, 145, 0.10);
   --blob-1: rgba(255, 255, 255, 0.95);
-  --blob-2: rgba(176, 38, 255, 0.09);
+  --blob-2: rgba(75, 34, 120, 0.07);
   --blob-3: rgba(0, 0, 0, 0.04);
   --grid-line: rgba(0, 0, 0, 0.03);
   --card-spot: rgba(255, 255, 255, 0.7);
-  --card-edge: rgba(138, 15, 214, 0.35);
+  --card-edge: rgba(75, 34, 120, 0.3);
   --grain-opacity: 0.035;
 }
 @media (prefers-color-scheme: light) {
   :root[data-theme='auto'] {
     --beam: rgba(120, 125, 145, 0.10);
     --blob-1: rgba(255, 255, 255, 0.95);
-    --blob-2: rgba(176, 38, 255, 0.09);
+    --blob-2: rgba(75, 34, 120, 0.07);
     --blob-3: rgba(0, 0, 0, 0.04);
     --grid-line: rgba(0, 0, 0, 0.03);
     --card-spot: rgba(255, 255, 255, 0.7);
-    --card-edge: rgba(138, 15, 214, 0.35);
+    --card-edge: rgba(75, 34, 120, 0.3);
     --grain-opacity: 0.035;
   }
 }
@@ -557,7 +561,7 @@ button.glass:hover,
 
 /* Gradient headline words, e.g. "views." */
 .grad {
-  background: linear-gradient(90deg, var(--primary), var(--accent));
+  background: linear-gradient(90deg, var(--primary-text), var(--accent));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
