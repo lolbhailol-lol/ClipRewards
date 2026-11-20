@@ -214,7 +214,7 @@ export default function CampaignDetail({ inApp }) {
           {c.gallery?.length > 0 && (
             <section className="mt-8">
               <h2 className="mb-2.5 px-1 text-[15px] font-semibold">Inspiration</h2>
-              <div className="no-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 md:mx-0 md:px-0">
+              <div className="no-scrollbar -mx-4 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 md:mx-0 md:scroll-px-0 md:px-0">
                 {c.gallery.map((g, i) => (
                   <div key={g} className="glass w-40 shrink-0 snap-start rounded-3xl p-1.5 sm:w-48">
                     <img

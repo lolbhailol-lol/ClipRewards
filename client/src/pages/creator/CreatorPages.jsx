@@ -59,24 +59,26 @@ export function Home() {
 
       {!accounts.isPending && !hasAccount && <ConnectPrompt available={accounts.data?.available?.instagram} />}
 
-      <Link to="/app/earnings" className="glass block rounded-3xl p-5 transition-colors hover:bg-glass-2">
+      <Card className="p-5">
         <div className="flex items-center justify-between">
           <p className="text-[13px] text-muted">Earnings</p>
-          <ChevronRight className="size-4 text-faint" aria-hidden />
+          <Button to="/app/earnings" variant="ghost" size="sm" className="-my-1.5 -mr-2">
+            View all <ChevronRight className="size-4" aria-hidden />
+          </Button>
         </div>
-        <div className="mt-3 grid grid-cols-3 gap-3">
+        <div className="mt-3 grid grid-cols-3 gap-2 sm:gap-3">
           {[
             [rupees(w?.withdrawablePaise), 'Withdrawable'],
             [rupees(w?.onHoldPaise), 'On hold'],
             [String(clips.data?.submissions.length ?? 0), 'Clips'],
           ].map(([v, k]) => (
-            <div key={k}>
-              <p className={cx("font-mono text-xl font-medium tabular-nums", toneClass(k))}>{v}</p>
-              <p className="label mt-0.5">{k}</p>
+            <div key={k} className="min-w-0 rounded-2xl border border-border bg-glass-2 p-3 sm:p-4">
+              <p className={cx('truncate font-mono text-lg font-medium tabular-nums sm:text-xl', toneClass(k))}>{v}</p>
+              <p className="mt-1 truncate font-mono text-[10px] font-medium uppercase tracking-[0.02em] text-muted sm:text-[11px] sm:tracking-[0.08em]">{k === 'Withdrawable' ? (<><span className="sm:hidden">Available</span><span className="hidden sm:inline">Withdrawable</span></>) : k}</p>
             </div>
           ))}
         </div>
-      </Link>
+      </Card>
 
       {hasAccount && <InsightsSummary />}
 
@@ -135,7 +137,7 @@ function LiveFeed() {
           New paid campaigns show up here as soon as brands launch them.
         </EmptyState>
       ) : (
-        <div className="stagger no-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-1 md:mx-0 md:grid md:grid-cols-2 md:gap-4 md:overflow-visible md:px-0 lg:grid-cols-3 2xl:grid-cols-4">
+        <div className="stagger no-scrollbar -mx-4 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-1 md:mx-0 md:scroll-px-0 md:grid md:grid-cols-2 md:gap-4 md:overflow-visible md:px-0 lg:grid-cols-3 2xl:grid-cols-4">
           {campaigns.slice(0, 6).map((c) => (
             <CampaignCard key={c.id} campaign={c} to={`/app/campaigns/${c.id}`} className="w-[78%] shrink-0 snap-start sm:w-[46%] md:w-auto" />
           ))}

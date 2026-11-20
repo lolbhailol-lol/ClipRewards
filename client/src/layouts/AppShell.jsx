@@ -89,13 +89,13 @@ export default function AppShell({ nav, accountTo, section }) {
                 cx(
                   'flex h-11 items-center gap-3 rounded-2xl text-sm font-medium transition-colors',
                   collapsed ? 'justify-center' : 'px-3.5',
-                  isActive ? 'bg-glass-3 text-primary-text shadow-[inset_0_1px_0_var(--glass-hi)]' : 'text-muted hover:bg-glass-2 hover:text-text'
+                  isActive ? 'bg-primary-soft text-primary-text ring-1 ring-inset ring-border-strong' : 'text-muted hover:bg-glass-2 hover:text-text'
                 )
               }
             >
               {({ isActive }) => (
                 <>
-                  <Icon className="size-[18px] shrink-0" strokeWidth={isActive ? 2.2 : 1.75} aria-hidden />
+                  <Icon className="size-[18px] shrink-0 text-primary-text" strokeWidth={isActive ? 2.2 : 1.75} aria-hidden />
                   {collapsed ? <span className="sr-only">{label}</span> : label}
                 </>
               )}

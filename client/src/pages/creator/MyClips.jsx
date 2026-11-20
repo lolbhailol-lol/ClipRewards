@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowDownToLine, CheckCircle2, ExternalLink, Eye, Film, Megaphone, ShieldAlert, Upload, XCircle } from 'lucide-react';
+import { ArrowDownToLine, CheckCircle2, ChevronRight, ExternalLink, Eye, Film, Megaphone, ShieldAlert, Upload, XCircle } from 'lucide-react';
 import { compact, img, rupees, timeAgo } from '../../lib/format';
 import { InstagramIcon, YoutubeIcon } from '../../ui/PlatformIcons';
 import { checkProblem, useMySubmissions, useWallet } from '../../components/Clips';
@@ -165,8 +165,8 @@ export default function MyClips() {
               <div className="mt-4">
                 <Chips label="Filter clips" value={filter} onChange={setFilter} options={FILTERS.map((f) => ({ ...f, label: `${f.label}${counts[f.value] ? ` · ${counts[f.value]}` : ''}` }))} />
               </div>
-              <div className="mt-4 grid gap-4 xl:grid-cols-2">
-                {shown.length === 0 && <p className="py-10 text-center text-sm text-muted xl:col-span-2">No clips with this status.</p>}
+              <div className="mt-4 grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
+                {shown.length === 0 && <p className="py-10 text-center text-sm text-muted md:col-span-2 2xl:col-span-3">No clips with this status.</p>}
                 {shown.map((s) => (
                   <ClipCard key={s.id} s={s} example={example} />
                 ))}
@@ -241,84 +241,79 @@ function ClipCard({ s, example }) {
   const postProps = example ? {} : { href: s.url, target: '_blank', rel: 'noreferrer', 'aria-label': 'Open post' };
 
   return (
-    <Card className="flex gap-4 p-3 md:gap-5 md:p-4">
-      {/* Vertical thumbnail */}
-      <PostLink {...postProps} className="relative block aspect-[9/16] w-24 shrink-0 overflow-hidden rounded-2xl bg-glass-2 sm:w-32 md:w-40">
-        {thumb ? (
-          <img src={thumb} alt="" loading="lazy" referrerPolicy="no-referrer" className="size-full object-cover" />
-        ) : (
-          <span className="stripes grid size-full place-items-center">
-            <Icon className="size-6 text-muted" />
-          </span>
-        )}
-        <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-black/60 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-white">
-          <Icon className="size-3" /> {s.platform === 'youtube' ? 'YouTube' : 'Instagram'}
-        </span>
-      </PostLink>
-
-      <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-2">
-          <Status tone={tone}>{label}</Status>
-          {example && <Tag>Example</Tag>}
-          {s.flagged && (
-            <span className="inline-flex items-center gap-1 text-xs text-warning">
-              <ShieldAlert className="size-3.5" aria-hidden /> Under check
+    <Card className="p-4 md:p-5">
+      {/* Top: thumbnail, status, title */}
+      <div className="flex gap-3.5">
+        <PostLink {...postProps} className="relative block aspect-[9/16] w-[4.5rem] shrink-0 overflow-hidden rounded-xl bg-glass-2 md:w-20">
+          {thumb ? (
+            <img src={thumb} alt="" loading="lazy" referrerPolicy="no-referrer" className="size-full object-cover" />
+          ) : (
+            <span className="stripes grid size-full place-items-center">
+              <Icon className="size-5 text-muted" />
             </span>
           )}
-        </div>
-        <p className="mt-2 line-clamp-2 text-[15px] font-medium leading-snug">{s.title || 'Your clip'}</p>
-        {s.status === 'rejected' && s.reviewNote && <p className="mt-1 text-sm text-danger">{s.reviewNote}</p>}
-        {checkProblem(s) && <p className="mt-2 rounded-2xl bg-warning-soft px-3 py-2 text-[13px] text-warning">{checkProblem(s)}</p>}
-
-        {/* Campaign */}
-        {s.campaign && (
-          <Link to={campaignTo} className="mt-3 block rounded-2xl bg-glass-2 px-3 py-2.5 transition-colors hover:bg-glass-3">
-            <span className="flex items-center justify-between gap-2">
-              <span className="label inline-flex items-center gap-1.5">
-                <Megaphone className="size-3.5" aria-hidden /> Campaign
+        </PostLink>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <Status tone={tone}>{label}</Status>
+            {example && <Tag>Example</Tag>}
+            {s.flagged && (
+              <span className="inline-flex items-center gap-1 text-xs text-warning">
+                <ShieldAlert className="size-3.5" aria-hidden /> Under check
               </span>
-              {campaignState && <span className="text-[11px] text-muted">{campaignState}</span>}
-            </span>
-            <span className="mt-1 block truncate text-sm font-medium">{s.campaign.title}</span>
-            {s.campaign.brand && <span className="block truncate text-xs text-muted">{s.campaign.brand}</span>}
-          </Link>
-        )}
-
-        {/* Numbers */}
-        <div className="mt-3 grid grid-cols-3 overflow-hidden rounded-2xl bg-glass-2">
-          <Num label="Posted" value={date(s.publishedAt || s.createdAt)} />
-          <Num label="Views" value={(s.views ?? 0) < 100000 ? (s.views ?? 0).toLocaleString('en-IN') : compact(s.views)} className="border-x border-border" />
-          <Num label="Earned" value={rupees(s.earnedPaise)} money />
-        </div>
-        <p className="mt-2 text-xs text-faint">
-          {s.heldPaise > 0 ? `${rupees(s.heldPaise)} on 7-day hold · ` : ''}
-          {s.likes != null ? `${compact(s.likes)} likes · ` : ''}
-          {s.comments != null ? `${compact(s.comments)} comments · ` : ''}
-          {s.lastCheckedAt ? `Views updated ${timeAgo(s.lastCheckedAt)}` : 'Views update every few hours'}
-        </p>
-
-        <div className="mt-3 flex gap-2">
-          {!example && (
-            <a href={s.url} target="_blank" rel="noreferrer" className="inline-flex h-10 flex-1 items-center justify-center gap-1.5 rounded-full bg-glass-2 text-[13px] font-medium hover:bg-glass-3">
-              <ExternalLink className="size-3.5" aria-hidden /> View post
-            </a>
-          )}
-          {s.campaign && (
-            <Link to={campaignTo} className="inline-flex h-10 flex-1 items-center justify-center gap-1.5 rounded-full bg-glass-2 text-[13px] font-medium hover:bg-glass-3">
-              <Megaphone className="size-3.5" aria-hidden /> Campaign
-            </Link>
-          )}
+            )}
+          </div>
+          <p className="mt-2 line-clamp-2 text-[15px] font-medium leading-snug">{s.title || 'Your clip'}</p>
+          <p className="mt-1 flex items-center gap-1.5 text-xs text-muted">
+            <Icon className="size-3.5" aria-hidden /> {s.platform === 'youtube' ? 'YouTube' : 'Instagram'} · Posted {date(s.publishedAt || s.createdAt)}
+          </p>
         </div>
       </div>
+
+      {s.status === 'rejected' && s.reviewNote && <p className="mt-3 rounded-2xl bg-danger-soft px-3 py-2 text-[13px] text-danger">{s.reviewNote}</p>}
+      {checkProblem(s) && <p className="mt-3 rounded-2xl bg-warning-soft px-3 py-2 text-[13px] text-warning">{checkProblem(s)}</p>}
+
+      {/* Numbers, one box each */}
+      <div className="mt-4 grid grid-cols-2 gap-2.5">
+        <Num label="Views" value={(s.views ?? 0) < 100000 ? (s.views ?? 0).toLocaleString('en-IN') : compact(s.views)} />
+        <Num label="Earned" value={rupees(s.earnedPaise)} money hint={s.heldPaise > 0 ? `${rupees(s.heldPaise)} on 7-day hold` : undefined} />
+      </div>
+
+      {/* Campaign */}
+      {s.campaign && (
+        <Link to={campaignTo} className="mt-2.5 flex items-center gap-3 rounded-2xl border border-border bg-glass-2 px-3.5 py-3 transition-colors hover:bg-glass-3">
+          <Megaphone className="size-4 shrink-0 text-primary-text" aria-hidden />
+          <span className="min-w-0 flex-1">
+            <span className="block truncate text-sm font-medium">{s.campaign.title}</span>
+            <span className="block truncate text-xs text-muted">
+              {[s.campaign.brand, campaignState].filter(Boolean).join(' · ')}
+            </span>
+          </span>
+          <ChevronRight className="size-4 shrink-0 text-faint" aria-hidden />
+        </Link>
+      )}
+
+      <p className="mt-3 text-xs text-faint">
+        {s.likes != null ? `${compact(s.likes)} likes · ` : ''}
+        {s.comments != null ? `${compact(s.comments)} comments · ` : ''}
+        {s.lastCheckedAt ? `Views updated ${timeAgo(s.lastCheckedAt)}` : 'Views update every few hours'}
+      </p>
+
+      {!example && (
+        <a href={s.url} target="_blank" rel="noreferrer" className="mt-3 inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-full border border-border bg-glass-2 text-[13px] font-medium hover:bg-glass-3">
+          <ExternalLink className="size-3.5" aria-hidden /> View post
+        </a>
+      )}
     </Card>
   );
 }
 
-function Num({ label, value, money, className = '' }) {
+function Num({ label, value, money, hint }) {
   return (
-    <div className={`min-w-0 p-2.5 md:p-3 ${className}`}>
+    <div className="min-w-0 rounded-2xl border border-border bg-glass-2 p-3.5">
       <p className="label">{label}</p>
-      <p className={`mt-0.5 truncate font-mono text-[13px] font-medium tabular-nums md:text-sm ${money ? 'text-c-money' : ''}`}>{value}</p>
+      <p className={`mt-1 truncate font-mono text-xl font-medium tabular-nums ${money ? 'text-c-money' : ''}`}>{value}</p>
+      {hint && <p className="mt-0.5 truncate text-[11px] text-muted">{hint}</p>}
     </div>
   );
 }

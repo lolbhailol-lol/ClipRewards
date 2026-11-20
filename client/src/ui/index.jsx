@@ -58,7 +58,7 @@ export function IconAction({ icon: Icon, label, to, onClick, disabled, tone }) {
           tone === 'primary' && '!bg-primary !text-primary-fg'
         )}
       >
-        <Icon className="size-[22px]" strokeWidth={1.75} aria-hidden />
+        <Icon className={cx('size-[22px]', tone !== 'primary' && 'text-primary-text')} strokeWidth={1.75} aria-hidden />
       </span>
       <span className="text-xs font-medium text-muted group-hover:text-text">{label}</span>
     </>
@@ -109,8 +109,8 @@ export function ListRow({ icon: Icon, title, subtitle, trailing, to, onClick, to
       {Icon && (
         <span
           className={cx(
-            'grid size-9 shrink-0 place-items-center rounded-xl bg-glass-3',
-            tone === 'danger' ? 'text-danger' : 'text-text'
+            'grid size-9 shrink-0 place-items-center rounded-xl border border-glass-border bg-primary-soft',
+            tone === 'danger' ? 'text-danger' : 'text-primary-text'
           )}
         >
           <Icon className="size-[18px]" strokeWidth={1.75} aria-hidden />
@@ -279,8 +279,8 @@ export function EmptyState({ icon: Icon, title, children, action, className }) {
   return (
     <div className={cx('glass flex flex-col items-center rounded-3xl px-6 py-14 text-center', className)}>
       {Icon && (
-        <span className="mb-5 grid size-14 place-items-center rounded-full bg-glass-3">
-          <Icon className="size-6 text-muted" strokeWidth={1.5} aria-hidden />
+        <span className="mb-5 grid size-14 place-items-center rounded-full border border-glass-border bg-primary-soft">
+          <Icon className="size-6 text-primary-text" strokeWidth={1.5} aria-hidden />
         </span>
       )}
       <p className="font-medium">{title}</p>

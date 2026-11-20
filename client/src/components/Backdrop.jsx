@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
+import StarField from './StarField';
 
 /**
- * App-wide atmosphere: slow light beams from the top, drifting glow, a faint grid and film grain, fixed behind every page.
+ * App-wide atmosphere: a star field flying toward you with big colourful stars popping up, a faint grid and film grain,
+ * fixed behind every page.
  * Also powers the cursor spotlight on `.glass` cards (sets --mx/--my on the hovered card).
  */
 export default function Backdrop() {
@@ -34,17 +36,10 @@ export default function Backdrop() {
 
   return (
     <div className="backdrop" aria-hidden>
-      <div className="backdrop__blob backdrop__blob--1" />
-      <div className="backdrop__blob backdrop__blob--2" />
-      <div className="backdrop__blob backdrop__blob--3" />
-      <div className="backdrop__glow" />
-      <div className="backdrop__beams">
-        <span className="beam beam--1" />
-        <span className="beam beam--2" />
-        <span className="beam beam--3" />
-        <span className="beam beam--4" />
-      </div>
+      <div className="backdrop__spotlight" />
+      <div className="backdrop__edge" />
       <div className="backdrop__grid" />
+      <StarField />
       <div className="backdrop__vignette" />
       <div className="backdrop__grain" />
     </div>

@@ -68,10 +68,10 @@ export default function Landing() {
     <main>
       {/* Hero with animated rings */}
       <section className="relative overflow-hidden">
-        <div className="hero-glow" aria-hidden />
-        <div className="hero-rings top-[22rem] md:top-[26rem]" aria-hidden>
-          <span className="hero-ring" style={{ width: 560, height: 560, '--dur': '16s' }} />
-          <span className="hero-ring hidden md:block" style={{ width: 860, height: 860, '--dur': '22s', '--dir': 'reverse' }} />
+        {/* Big faint rings around the headline, each with one light travelling around it. */}
+        <div className="hero-rings top-[24rem] md:top-[30rem]" aria-hidden>
+          <span className="hero-ring hero-ring--fill" style={{ width: 'min(1180px, 150vw)', height: 'min(1180px, 150vw)', '--dur': '18s' }} />
+          <span className="hero-ring hero-ring--white hidden md:block" style={{ width: 840, height: 840, '--dur': '26s', '--dir': 'reverse' }} />
         </div>
 
         <div className="relative mx-auto max-w-6xl px-4 pb-10 pt-14 md:px-6 md:pt-24">

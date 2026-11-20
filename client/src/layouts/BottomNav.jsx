@@ -48,11 +48,11 @@ export default function BottomNav({ items, label = 'Main', className }) {
   return (
     <nav aria-label={label} className={cx('fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-30 md:hidden', className)}>
       <ul className="glass-solid relative flex rounded-[2rem] p-1.5 shadow-[0_16px_40px_-12px_rgba(0,0,0,0.7)]">
-        {/* One highlight that slides to the active tab. */}
+        {/* One outline (no fill) that slides to the active tab. */}
         {active >= 0 && (
           <li
             aria-hidden
-            className="pointer-events-none absolute inset-y-1.5 left-1.5 rounded-[1.6rem] bg-glass-3 shadow-[inset_0_1px_0_var(--glass-hi)] transition-transform duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none"
+            className="pointer-events-none absolute inset-y-1.5 left-1.5 rounded-[1.6rem] border border-faint bg-transparent transition-transform duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none"
             style={{ width: `calc((100% - 0.75rem) / ${items.length})`, transform: `translateX(${active * 100}%)` }}
           />
         )}
@@ -64,13 +64,13 @@ export default function BottomNav({ items, label = 'Main', className }) {
               className={({ isActive }) =>
                 cx(
                   'flex h-[3.4rem] flex-col items-center justify-center gap-1 rounded-[1.6rem] text-[11px] font-medium transition-colors active:scale-95',
-                  isActive ? 'text-primary-text' : 'text-faint hover:text-muted'
+                  isActive ? 'text-text' : 'text-muted hover:text-text'
                 )
               }
             >
               {({ isActive }) => (
                 <>
-                  <Icon className={cx('size-[21px] transition-transform duration-300', isActive && '-translate-y-0.5')} strokeWidth={isActive ? 2.2 : 1.75} aria-hidden />
+                  <Icon className={cx('size-[21px] text-primary-text transition-transform duration-300', isActive && '-translate-y-0.5')} strokeWidth={isActive ? 2.2 : 1.75} aria-hidden />
                   {text}
                 </>
               )}

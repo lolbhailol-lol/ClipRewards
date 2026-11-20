@@ -1,83 +1,85 @@
 @import "tailwindcss";
 
 /*
- * Black + deep purple design tokens (plum #5B2D91 for actions, rose #E0457B for "Live").
+ * Black + mustard design tokens (mustard #E0A526 for actions and highlights, used sparingly).
  * Dark is the default. Light is available, and "auto" follows the system.
  * Colour is used only for status (green / amber / red).
  */
 :root {
   /* Number colours (meaning, not decoration) */
   --c-money: #4ade80;
-  --c-hold: #fbbf24;
+  --c-hold: #fb923c;
   --c-clips: #60a5fa;
   --c-views: #c084fc;
   --c-reach: #22d3ee;
   --c-engage: #f472b6;
   --bg: #000000;
-  --spot: rgba(91, 45, 145, 0.22);
-  --glass: rgba(255, 255, 255, 0.05);
+  --spot: transparent;
+  --glass: #0e0e0f;
   --glass-2: rgba(255, 255, 255, 0.08);
   --glass-3: rgba(255, 255, 255, 0.11);
-  --glass-border: rgba(255, 255, 255, 0.075);
+  --glass-border: rgba(224, 165, 38, 0.15);
   --glass-hi: rgba(255, 255, 255, 0.06);
-  --glass-solid: rgba(24, 24, 27, 0.72);
-  --border: rgba(255, 255, 255, 0.11);
-  --border-strong: rgba(255, 255, 255, 0.14);
+  --glass-solid: rgba(20, 20, 22, 0.96);
+  --border: rgba(255, 255, 255, 0.09);
+  --border-strong: rgba(224, 165, 38, 0.22);
+  --primary-soft: rgba(224, 165, 38, 0.13);
   --text: #ffffff;
   --muted: #8a8a8a;
   --faint: #5c5c5c;
-  --primary: #5b2d91;
-  --primary-text: #b39ddb;
-  --primary-hover: #6a37a8;
-  --primary-fg: #ffffff;
+  --primary: #e0a526;
+  --primary-text: #f2c760;
+  --primary-hover: #ebb43f;
+  --primary-fg: #0a0a0a;
   --success: #4ade80;
   --success-soft: rgba(74, 222, 128, 0.1);
-  --warning: #fbbf24;
-  --warning-soft: rgba(251, 191, 36, 0.1);
+  --warning: #fb923c;
+  --warning-soft: rgba(251, 146, 60, 0.1);
   --danger: #f87171;
   --danger-soft: rgba(248, 113, 113, 0.1);
-  --ring: #9a7fd1;
-  --accent: #e0457b;
-  --accent-soft: rgba(224, 69, 123, 0.12);
-  --glow: rgba(91, 45, 145, 0.28);
+  --ring: #e0a526;
+  --accent: #ef4444;
+  --accent-soft: rgba(239, 68, 68, 0.12);
+  --glow: rgba(224, 165, 38, 0.16);
   --shadow: 0 1px 0 var(--glass-hi) inset, 0 12px 32px -12px rgba(0, 0, 0, 0.6);
   color-scheme: dark;
 }
 
 :root[data-theme='light'] {
   --c-money: #15803d;
-  --c-hold: #b45309;
+  --c-hold: #c2410c;
   --c-clips: #2563eb;
   --c-views: #7c3aed;
   --c-reach: #0e7490;
   --c-engage: #db2777;
   --bg: #e9eaee;
   --spot: rgba(255, 255, 255, 0.9);
-  --glass: rgba(255, 255, 255, 0.62);
+  --glass: #f7f8fa;
   --glass-2: rgba(255, 255, 255, 0.85);
   --glass-3: rgba(0, 0, 0, 0.06);
-  --glass-border: rgba(0, 0, 0, 0.07);
+  --glass-border: rgba(168, 111, 0, 0.16);
   --glass-hi: rgba(255, 255, 255, 0.9);
-  --glass-solid: rgba(255, 255, 255, 0.78);
+  --glass-solid: rgba(255, 255, 255, 0.96);
   --border: rgba(0, 0, 0, 0.08);
-  --border-strong: rgba(0, 0, 0, 0.15);
+  --primary-soft: rgba(217, 160, 33, 0.16);
+  --border-strong: rgba(168, 111, 0, 0.22);
   --text: #0a0a0b;
   --muted: #5d5d66;
   --faint: #9a9aa3;
-  --primary: #4b2278;
-    --primary-text: #4b2278;
-  --primary-hover: #3d1b63;
-  --primary-fg: #ffffff;
+  --primary: #d9a021;
+  --primary-text: #8a5d00;
+  --primary-hover: #c89019;
+  --primary-fg: #0a0a0a;
   --success: #15803d;
   --success-soft: rgba(21, 128, 61, 0.09);
-  --warning: #a16207;
-  --warning-soft: rgba(161, 98, 7, 0.09);
+  --warning: #c2410c;
+  --warning-soft: rgba(194, 65, 12, 0.09);
   --danger: #b91c1c;
   --danger-soft: rgba(185, 28, 28, 0.08);
-  --ring: #4b2278;
-    --accent: #b8325f;
-    --accent-soft: rgba(184, 50, 95, 0.09);
-    --glow: rgba(75, 34, 120, 0.15);
+  --ring: #8a5d00;
+  --accent: #dc2626;
+  --accent-soft: rgba(220, 38, 38, 0.08);
+  --glow: rgba(217, 160, 33, 0.18);
   --shadow: 0 1px 0 var(--glass-hi) inset, 0 1px 2px rgba(15, 20, 40, 0.05), 0 12px 28px -16px rgba(15, 20, 40, 0.16);
   color-scheme: light;
 }
@@ -85,38 +87,39 @@
 @media (prefers-color-scheme: light) {
   :root[data-theme='auto'] {
     --c-money: #15803d;
-    --c-hold: #b45309;
+    --c-hold: #c2410c;
     --c-clips: #2563eb;
     --c-views: #7c3aed;
     --c-reach: #0e7490;
     --c-engage: #db2777;
     --bg: #e9eaee;
     --spot: rgba(255, 255, 255, 0.9);
-    --glass: rgba(255, 255, 255, 0.62);
+    --glass: #f7f8fa;
     --glass-2: rgba(255, 255, 255, 0.85);
     --glass-3: rgba(0, 0, 0, 0.06);
-    --glass-border: rgba(0, 0, 0, 0.07);
+    --glass-border: rgba(168, 111, 0, 0.16);
     --glass-hi: rgba(255, 255, 255, 0.9);
-    --glass-solid: rgba(255, 255, 255, 0.78);
+    --glass-solid: rgba(255, 255, 255, 0.96);
     --border: rgba(0, 0, 0, 0.08);
-    --border-strong: rgba(0, 0, 0, 0.15);
+  --primary-soft: rgba(217, 160, 33, 0.16);
+    --border-strong: rgba(168, 111, 0, 0.22);
     --text: #0a0a0b;
     --muted: #5d5d66;
     --faint: #9a9aa3;
-    --primary: #4b2278;
-    --primary-text: #4b2278;
-    --primary-hover: #3d1b63;
-    --primary-fg: #ffffff;
+    --primary: #d9a021;
+  --primary-text: #8a5d00;
+  --primary-hover: #c89019;
+  --primary-fg: #0a0a0a;
     --success: #15803d;
     --success-soft: rgba(21, 128, 61, 0.09);
-    --warning: #a16207;
-    --warning-soft: rgba(161, 98, 7, 0.09);
+    --warning: #c2410c;
+  --warning-soft: rgba(194, 65, 12, 0.09);
     --danger: #b91c1c;
     --danger-soft: rgba(185, 28, 28, 0.08);
-    --ring: #4b2278;
-    --accent: #b8325f;
-    --accent-soft: rgba(184, 50, 95, 0.09);
-    --glow: rgba(75, 34, 120, 0.15);
+    --ring: #8a5d00;
+  --accent: #dc2626;
+  --accent-soft: rgba(220, 38, 38, 0.08);
+  --glow: rgba(217, 160, 33, 0.18);
     --shadow: 0 1px 0 var(--glass-hi) inset, 0 1px 2px rgba(15, 20, 40, 0.05), 0 12px 28px -16px rgba(15, 20, 40, 0.16);
     color-scheme: light;
   }
@@ -130,6 +133,7 @@
   --color-glass-solid: var(--glass-solid);
   --color-border: var(--border);
   --color-border-strong: var(--border-strong);
+  --color-primary-soft: var(--primary-soft);
   --color-text: var(--text);
   --color-muted: var(--muted);
   --color-faint: var(--faint);
@@ -190,9 +194,25 @@
   /* Frosted grey glass panel. */
   /* No backdrop blur on cards: re-blurring an animated background on every card each frame is what made scrolling feel laggy. */
   .glass {
+    position: relative;
     background: var(--glass);
-    border: 1px solid var(--glass-border);
+    border: 1px solid transparent;
     box-shadow: var(--shadow);
+  }
+  /* Shaded border: lit at the top-left, nearly gone on the sides, a little gold again at the bottom-right. */
+  .glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(160deg, var(--edge-a) 0%, var(--edge-b) 40%, var(--edge-b) 65%, var(--edge-c) 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+    pointer-events: none;
+    transition: opacity 0.25s;
   }
   /* Denser glass for things floating over content (bottom nav, top bar). */
   .glass-solid {
@@ -250,24 +270,28 @@
   left: 50%;
   top: 50%;
   border-radius: 9999px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--ring-line);
   transform: translate(-50%, -50%);
 }
+/* The big ring is very slightly lit from the top, like a lens. */
+.hero-ring--fill { background: linear-gradient(180deg, var(--ring-fill) 0%, transparent 55%); }
 /* A light that travels around a ring: conic gradient clipped to the ring's edge. */
 .hero-ring::after {
   content: '';
   position: absolute;
   inset: -1px;
   border-radius: inherit;
-  background: conic-gradient(from 0deg, transparent 0deg 290deg, var(--sweep) 340deg, transparent 360deg);
-  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px));
-  mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px));
+  background: conic-gradient(from 0deg, transparent 0deg 280deg, var(--sweep-tail) 320deg, var(--sweep) 358deg, transparent 360deg);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 1px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 1px));
   animation: ring-spin var(--dur, 14s) linear infinite;
   animation-direction: var(--dir, normal);
 }
-:root { --sweep: rgba(179, 157, 219, 0.6); }
-:root[data-theme='light'] { --sweep: rgba(75, 34, 120, 0.4); }
-@media (prefers-color-scheme: light) { :root[data-theme='auto'] { --sweep: rgba(75, 34, 120, 0.4); } }
+.hero-ring--white::after { --sweep: rgba(255, 255, 255, 0.55); --sweep-tail: rgba(255, 255, 255, 0.08); }
+:root { --sweep: #e0a526; --sweep-tail: rgba(224, 165, 38, 0.12); --ring-line: rgba(255, 255, 255, 0.07); --ring-fill: rgba(255, 255, 255, 0.035); }
+:root[data-theme='light'] { --sweep: #c98a12; --sweep-tail: rgba(201, 138, 18, 0.12); --ring-line: rgba(0, 0, 0, 0.08); --ring-fill: rgba(255, 255, 255, 0.6); }
+@media (prefers-color-scheme: light) { :root[data-theme='auto'] { --sweep: #c98a12; --sweep-tail: rgba(201, 138, 18, 0.12); --ring-line: rgba(0, 0, 0, 0.08); --ring-fill: rgba(255, 255, 255, 0.6); } }
+:root[data-theme='light'] .hero-ring--white::after { --sweep: rgba(0, 0, 0, 0.35); --sweep-tail: rgba(0, 0, 0, 0.05); }
 
 /* Soft breathing glow at the top of the hero. */
 .hero-glow {
@@ -310,34 +334,34 @@
 
 /* Theme-aware colours for the effects. */
 :root {
-  --blob-1: rgba(91, 45, 145, 0.16);
-  --blob-2: rgba(91, 45, 145, 0.07);
-  --blob-3: rgba(60, 30, 100, 0.08);
-  --beam: rgba(179, 157, 219, 0.06);
-  --grid-line: rgba(255, 255, 255, 0.045);
-  --card-spot: rgba(91, 45, 145, 0.08);
-  --card-edge: rgba(154, 127, 209, 0.4);
+  --blob-1: rgba(224, 165, 38, 0.06);
+  --blob-2: rgba(214, 128, 24, 0.035);
+  --blob-3: rgba(240, 190, 70, 0.025);
+  --beam: rgba(242, 199, 96, 0.065);
+  --grid-line: rgba(255, 255, 255, 0.022);
+  --card-spot: rgba(224, 165, 38, 0.08);
+  --card-edge: rgba(242, 199, 96, 0.4);
   --grain-opacity: 0.06;
 }
 :root[data-theme='light'] {
   --beam: rgba(120, 125, 145, 0.10);
   --blob-1: rgba(255, 255, 255, 0.95);
-  --blob-2: rgba(75, 34, 120, 0.07);
+  --blob-2: rgba(217, 160, 33, 0.12);
   --blob-3: rgba(0, 0, 0, 0.04);
   --grid-line: rgba(0, 0, 0, 0.03);
   --card-spot: rgba(255, 255, 255, 0.7);
-  --card-edge: rgba(75, 34, 120, 0.3);
+  --card-edge: rgba(138, 93, 0, 0.3);
   --grain-opacity: 0.035;
 }
 @media (prefers-color-scheme: light) {
   :root[data-theme='auto'] {
     --beam: rgba(120, 125, 145, 0.10);
     --blob-1: rgba(255, 255, 255, 0.95);
-    --blob-2: rgba(75, 34, 120, 0.07);
+    --blob-2: rgba(217, 160, 33, 0.12);
     --blob-3: rgba(0, 0, 0, 0.04);
     --grid-line: rgba(0, 0, 0, 0.03);
     --card-spot: rgba(255, 255, 255, 0.7);
-    --card-edge: rgba(75, 34, 120, 0.3);
+    --card-edge: rgba(138, 93, 0, 0.3);
     --grain-opacity: 0.035;
   }
 }
@@ -406,7 +430,8 @@ a.glass:hover,
 button.glass:hover,
 .glass.lift:hover {
   transform: translateY(-2px);
-  border-color: var(--card-edge);
+  --edge-a: var(--edge-hover);
+  --edge-c: var(--edge-hover);
 }
 
 /* ---------- Page and list entrances ---------- */
@@ -561,8 +586,70 @@ button.glass:hover,
 
 /* Gradient headline words, e.g. "views." */
 .grad {
-  background: linear-gradient(90deg, var(--primary-text), var(--accent));
+  background: linear-gradient(90deg, var(--primary-text), var(--primary));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
+
+/* ---------- Star field (components/StarField.jsx) ---------- */
+.backdrop__stars { position: absolute; inset: 0; }
+
+/* ---------- Funky yellow shapes behind everything ---------- */
+.backdrop__shape {
+  position: absolute;
+  opacity: var(--shape-opacity, 0.11);
+  filter: blur(24px);
+  will-change: border-radius, transform;
+}
+.backdrop__shape--1 {
+  width: 46vmax; height: 46vmax; right: -14vmax; top: -16vmax;
+  background: linear-gradient(135deg, #f2c760 0%, #e0a526 45%, #b8740f 100%);
+  animation: morph 18s ease-in-out infinite, shape-spin 70s linear infinite;
+}
+.backdrop__shape--2 {
+  width: 40vmax; height: 40vmax; left: -16vmax; bottom: -18vmax;
+  background: linear-gradient(315deg, #ffe08a 0%, #e0a526 50%, #8a5d00 100%);
+  opacity: calc(var(--shape-opacity, 0.11) * 0.8);
+  animation: morph 22s ease-in-out infinite reverse, shape-spin 90s linear infinite reverse;
+}
+@keyframes morph {
+  0%, 100% { border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; }
+  25% { border-radius: 70% 30% 46% 54% / 30% 39% 61% 70%; }
+  50% { border-radius: 28% 72% 35% 65% / 63% 30% 70% 37%; }
+  75% { border-radius: 58% 42% 62% 38% / 40% 64% 36% 60%; }
+}
+@keyframes shape-spin { to { transform: rotate(360deg); } }
+
+:root[data-theme='light'] { --shape-opacity: 0.14; }
+@media (prefers-color-scheme: light) { :root[data-theme='auto'] { --shape-opacity: 0.14; } }
+@media (max-width: 767px) {
+  .backdrop__shape { filter: blur(18px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .backdrop__shape { animation: none !important; }
+}
+
+/* ---------- Spotlight from the top + a thin bright edge line ---------- */
+.backdrop__spotlight {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 85vh;
+  background: radial-gradient(ellipse 70% 100% at 50% 0%, var(--spot-a) 0%, var(--spot-b) 35%, transparent 70%);
+}
+.backdrop__edge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent, var(--edge) 50%, transparent);
+}
+:root { --spot-a: rgba(255, 255, 255, 0.11); --spot-b: rgba(255, 255, 255, 0.035); --edge: rgba(255, 255, 255, 0.55); }
+:root[data-theme='light'] { --spot-a: rgba(255, 255, 255, 0.9); --spot-b: rgba(255, 255, 255, 0.4); --edge: rgba(0, 0, 0, 0.12); }
+@media (prefers-color-scheme: light) { :root[data-theme='auto'] { --spot-a: rgba(255, 255, 255, 0.9); --spot-b: rgba(255, 255, 255, 0.4); --edge: rgba(0, 0, 0, 0.12); } }
+
+/* Card edge shades (see .glass::before). */
+:root { --edge-a: rgba(242, 199, 96, 0.5); --edge-b: rgba(255, 255, 255, 0.06); --edge-c: rgba(224, 165, 38, 0.22); --edge-hover: rgba(242, 199, 96, 0.8); }
+:root[data-theme='light'] { --edge-a: rgba(168, 111, 0, 0.42); --edge-b: rgba(0, 0, 0, 0.06); --edge-c: rgba(168, 111, 0, 0.2); --edge-hover: rgba(168, 111, 0, 0.7); }
+@media (prefers-color-scheme: light) { :root[data-theme='auto'] { --edge-a: rgba(168, 111, 0, 0.42); --edge-b: rgba(0, 0, 0, 0.06); --edge-c: rgba(168, 111, 0, 0.2); --edge-hover: rgba(168, 111, 0, 0.7); } }
